@@ -3,10 +3,21 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": ">=10",
+    "pnpm": ">=3"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "preinstall": "npx only-allow pnpm",
+    "dev:fe": "pnpm --filter @music/web dev",
+    "dev:service": "pnpm --filter @music/api start:dev"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {}
 }
