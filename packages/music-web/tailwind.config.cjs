@@ -5,10 +5,14 @@ module.exports = {
   theme: {
     container: {
       center: true
-    }
+    },
+    backgroundColor: (theme) => ({
+      ...theme('colors'),
+      bgColor: '#fefefe'
+    })
   },
   variants: {
     extend: {}
   },
   plugins: []
-}
+};

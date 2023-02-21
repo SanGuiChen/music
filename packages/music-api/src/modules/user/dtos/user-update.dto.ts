@@ -8,7 +8,7 @@ export class UserUpdateDto {
   readonly email: string;
 
   @IsOptional()
-  readonly nickName: string;
+  readonly nickname: string;
 
   @IsOptional()
   readonly avatar?: string;
@@ -17,7 +17,7 @@ export class UserUpdateDto {
   @Length(8, 16, {
     message: 'Password must be between 8 to 16',
   })
-  readonly passWord: string;
+  readonly password: string;
 
   @IsOptional()
   readonly status: UserStatusEnum;

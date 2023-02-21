@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum UserStatusEnum {
@@ -17,13 +18,14 @@ export class User {
   id: string;
 
   @Column({ length: 45, comment: '昵称' })
-  nickName: string;
+  nickname: string;
 
   @Column({ comment: '用户名(邮箱格式)' })
   email: string;
 
+  @Exclude()
   @Column({ comment: '密码' })
-  passWord: string;
+  password: string;
 
   @Column({ comment: '头像', nullable: true })
   avatar: string;

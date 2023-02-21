@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Form, Input, Modal, Upload } from 'antd';
+import React, { useState } from 'react';
+import { Button, Form, Input, message, Modal, Upload } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { loginApi, registerApi } from '@/apis/User/user';
 import _ from 'lodash';
+import { useRequest } from 'ahooks';
+import { MUSIC_TOKEN } from '@/constants';
 
 enum FormStatus {
   LOGIN = 1,
@@ -13,17 +15,30 @@ enum FormStatus {
 const Login: React.FC = () => {
   const { t } = useTranslation();
   const [formStatus, setFormStatus] = useState<FormStatus>(FormStatus.LOGIN);
-
   const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
+
+  const { loading: submitting, runAsync: submit } = useRequest(
+    async (params: any) => {
+      const api = formStatus === FormStatus.LOGIN ? loginApi : registerApi;
+      const { data } = await api(params);
+      return data;
+    },
+    {
+      manual: true
+    }
+  );
 
   const onFinish = async (values: any) => {
-    const api = formStatus === FormStatus.LOGIN ? loginApi : registerApi;
     let val = values;
     if (formStatus === FormStatus.REGISTER) {
       val = _.omit(val, ['confirmPassword']);
     }
-    await api(val);
-    console.log('Success:', val);
+    const data = await submit(val);
+    localStorage.setItem(MUSIC_TOKEN, data.token);
+
+    message.success('Log in successfully');
+    setIsOpen(false);
   };
 
   const uploadButton = (
@@ -36,7 +51,7 @@ const Login: React.FC = () => {
   return (
     <>
       <Modal
-        open={true}
+        open={isOpen}
         closable={false}
         footer={null}
         centered={true}
@@ -51,7 +66,7 @@ const Login: React.FC = () => {
           {formStatus === FormStatus.REGISTER && (
             <Form.Item
               label={t('NICKNAME')}
-              name="nickName"
+              name="nickname"
               rules={[
                 {
                   required: true,
@@ -139,6 +154,7 @@ const Login: React.FC = () => {
               type="primary"
               htmlType="submit"
               className="w-full bg-green-600 hover:bg-green-700"
+              loading={submitting}
             >
               {formStatus === FormStatus.LOGIN ? t('LOGIN') : t('REGISTER')}
             </Button>

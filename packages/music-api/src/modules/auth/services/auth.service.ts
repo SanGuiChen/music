@@ -6,6 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import { compareMD5 } from 'transformers/codec.transformer';
 import { UserService } from 'modules/user/user.service';
 import { UserRegisterDto } from 'modules/user/dtos/user-register.dto';
+import { HttpBadRequestError } from 'errors/bad-request.error';
 
 @Injectable()
 export class AuthService {
@@ -14,23 +15,30 @@ export class AuthService {
     private userService: UserService,
   ) {}
 
-  async validateUser({ email, passWord }: UserLoginDto) {
-    const user = await this.userService.findOne({ email, passWord });
+  async loginUser({ email, password }: UserLoginDto) {
+    const user = await this.userService.findOne({ email });
 
-    if (user && compareMD5(passWord, user.passWord)) {
-      return _.omit(user, ['passWord']);
+    if (user && compareMD5(password, user.password)) {
+      const token = await this.createToken(user);
+      return {
+        ...user,
+        token,
+      };
     }
-    return null;
+    throw new HttpBadRequestError('The user name or password is incorrect');
   }
 
-  async login(user: User) {
+  async createToken(user: User) {
     const payload = { username: user.email, sub: user.id };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+    return this.jwtService.sign(payload);
   }
 
   async registerUser(params: UserRegisterDto) {
+    const { email } = params;
+    const existedUser = await this.userService.findOne({ email });
+    if (existedUser) {
+      throw new HttpBadRequestError('The user already exists');
+    }
     const user = await this.userService.createUser(params);
     return user;
   }

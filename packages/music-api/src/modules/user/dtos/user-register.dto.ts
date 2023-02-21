@@ -4,7 +4,7 @@ export class UserRegisterDto {
   @Length(1, 50, {
     message: 'NickName must be between 1 and 50',
   })
-  readonly nickName: string;
+  readonly nickname: string;
 
   @IsOptional()
   readonly avatar?: string;
@@ -13,5 +13,5 @@ export class UserRegisterDto {
   readonly email: string;
 
   @Length(8, 16)
-  readonly passWord: string;
+  readonly password: string;
 }

@@ -8,3 +8,7 @@ export const loginApi = async (params: ILogin): Promise<IResponse> => {
 export const registerApi = async (params: IRegister): Promise<IResponse> => {
   return axiosInstance.post('auth/register', params).then((res) => res.data);
 };
+
+export const verifyTokenApi = async (params: any): Promise<IResponse> => {
+  return {} as any;
+};

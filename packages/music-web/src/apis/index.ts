@@ -1,3 +1,4 @@
+import { MUSIC_TOKEN } from '@/constants';
 import { message } from 'antd';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { showMessage } from './status';
@@ -9,16 +10,16 @@ export interface IResponse {
 }
 
 const axiosInstance: AxiosInstance = axios.create({
-  baseURL: 'http://localhost:3000/',
+  baseURL: 'http://localhost:3000/api/',
   timeout: 5000,
   headers: {}
 });
 
 axiosInstance.interceptors.request.use(
   (config: AxiosRequestConfig) => {
-    const token = localStorage.getItem('MUSIC_TOKEN');
+    const token = localStorage.getItem(MUSIC_TOKEN);
     if (token) {
-      config.headers['authorization'] = token;
+      config.headers['authorization'] = `Bearer ${token}`;
     }
     return config;
   },
@@ -29,10 +30,10 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   (res: AxiosResponse) => {
-    if (res.status === 200) {
+    if (res.data.code === 200) {
       return res;
     } else {
-      message.error(showMessage(res.status));
+      showMessage(res.status);
       return res;
     }
   },

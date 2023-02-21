@@ -5,5 +5,5 @@ export class UserLoginDto {
   readonly email: string;
 
   @Length(8, 16)
-  readonly passWord: string;
+  readonly password: string;
 }

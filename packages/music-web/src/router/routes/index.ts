@@ -1,3 +1,4 @@
-import BaseRoute from './base'
+import BaseRoute from './base';
+import ManagementRoutes from './management';
 
-export default [...BaseRoute]
+export default [...BaseRoute, ...ManagementRoutes];

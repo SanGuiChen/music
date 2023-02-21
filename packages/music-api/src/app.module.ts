@@ -16,13 +16,4 @@ import { AuthModule } from './modules/auth/auth.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {
-  static port: number;
-  static apiVersion: string;
-  static apiPrefix: string;
-  constructor(private readonly configService: ConfigService) {
-    AppModule.port = +this.configService.get('API_PORT');
-    AppModule.apiVersion = this.configService.get('API_VERSION');
-    AppModule.apiPrefix = this.configService.get('API_PREFIX');
-  }
-}
+export class AppModule {}

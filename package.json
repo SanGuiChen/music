@@ -11,7 +11,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "preinstall": "npx only-allow pnpm",
     "dev:fe": "pnpm --filter @music/web dev",
-    "dev:service": "pnpm --filter @music/api start:dev"
+    "dev:service": "pnpm --filter @music/api start:dev",
+    "dev:script": "cd ./packages/music-script && pnpm start"
   },
   "keywords": [],
   "author": "",

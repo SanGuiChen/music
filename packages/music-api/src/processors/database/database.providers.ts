@@ -10,8 +10,8 @@ const defaultConnection = (config: ConfigService): TypeOrmModuleOptions => ({
   database: config.get('TYPEORM_DATABASE'),
   // entities: [__dirname + ''],
   autoLoadEntities: true,
-  synchronize: config.get('TYPEORM_SYNCHRONIZE') == 'true',
-  entityPrefix: config.get('TYPEORM_ENTITY_PREFIX'),
+  synchronize: true,
+  // entityPrefix: config.get('TYPEORM_ENTITY_PREFIX'),
 });
 
 export const databaseProviders = [
