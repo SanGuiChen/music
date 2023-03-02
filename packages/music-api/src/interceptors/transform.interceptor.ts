@@ -30,12 +30,6 @@ export class TransformInterceptor<T>
         data,
         message: 'success',
       })),
-      catchError((err) => {
-        if (err instanceof TimeoutError) {
-          return throwError(new RequestTimeoutException('Service timeout'));
-        }
-        return throwError(new CustomError('Unknown error the service side'));
-      }),
     );
   }
 }

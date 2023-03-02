@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ConfigProvider } from 'antd';
 import { Layout } from 'antd';
-import Login from './pages/base/Login';
+import Login from './pages/Base/Login';
 import zhCN from 'antd/locale/zh_CN';
 import Content from './containers/Content';
 import Header from './containers/Header';
@@ -35,7 +35,7 @@ const App: React.FC = () => {
         <Header />
         <Layout>
           <LeftSider />
-          <Content />
+          <Content className=" overflow-scroll p-5" />
         </Layout>
       </Layout>
     </ConfigProvider>

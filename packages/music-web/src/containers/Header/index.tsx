@@ -1,10 +1,10 @@
 import MusicSvg from '@/assets/music.svg';
 import { Dropdown, MenuProps, Space, Tooltip } from 'antd';
 import { GithubFilled, UserOutlined } from '@ant-design/icons';
-import { generateUniqueId } from '@/utils';
+import { uniqueIdGenerator } from '@/utils';
 
 const Index = () => {
-  const menuGenerateId = generateUniqueId('user-menu-item');
+  const menuGenerateId = uniqueIdGenerator('user-menu-item');
 
   const items: MenuProps['items'] = [
     {
@@ -26,7 +26,7 @@ const Index = () => {
   ];
 
   return (
-    <div className="w-full h-55 px-3 bg-white border-b-1 border-gray-300 flex items-center justify-between shadow-xl">
+    <div className="w-full h-55 px-3 bg-white border-b-1 border-gray-300 flex items-center justify-between shadow-xl z-10">
       <div>
         <img src={MusicSvg} alt="" className="w-12 inline-block" />
         &nbsp;

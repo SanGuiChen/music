@@ -24,9 +24,7 @@ const RouteDecorator = (props: { route: IRoute }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (route?.title) {
-      document.title = route.title;
-    }
+    document.title = `Music-${route.title}`;
     // 鉴权路由守卫
     if (route.meta?.requireAuth) {
       if (!isLogin()) {

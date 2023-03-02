@@ -1,6 +1,7 @@
-import { generateUniqueId } from '@/utils';
+import { uniqueIdGenerator } from '@/utils';
 import {
   CloudDownloadOutlined,
+  DownloadOutlined,
   EditOutlined,
   FileOutlined,
   PicRightOutlined,
@@ -11,7 +12,7 @@ import {
 import { Menu, MenuProps } from 'antd';
 import Sider from 'antd/es/layout/Sider';
 import _ from 'lodash';
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface IMenuItem {
@@ -23,7 +24,7 @@ interface IMenuItem {
 
 type MenuItem = Required<MenuProps>['items'][number];
 const urlObj: Record<string, string> = {};
-const generateMenuId = generateUniqueId('menu_item');
+const generateMenuId = uniqueIdGenerator('menu_item');
 
 const items: IMenuItem[] = [
   {
@@ -57,14 +58,22 @@ const items: IMenuItem[] = [
       {
         label: '任务模块',
         icon: <FileOutlined />
+      },
+      {
+        label: '脚本模块',
+        url: '/script',
+        icon: <DownloadOutlined />
       }
     ]
   }
 ];
 
+const openKeys: string[] = [];
+
 const menuItems = ((): MenuItem[] =>
   items.map((item) => {
     const key = generateMenuId.next().value;
+    openKeys.push(key);
     if (item?.url) {
       urlObj[key] = item.url;
     }
@@ -98,6 +107,7 @@ const Index = () => {
     <Sider width={200} collapsible theme="light">
       <Menu
         mode="inline"
+        defaultOpenKeys={openKeys}
         style={{ height: '100%', borderRight: 0 }}
         items={menuItems}
         onClick={({ key }) => {

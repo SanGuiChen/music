@@ -16,7 +16,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     response.status(status).json({
       code: status,
-      message,
+      message: message ?? 'The service side unknown error occurred',
     });
   }
 }

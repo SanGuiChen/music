@@ -6,7 +6,7 @@ enum MusicObjectStatusEnum {
 }
 
 @Entity()
-export class User {
+export class MusicObject {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -28,7 +28,7 @@ export class User {
   @Column({ comment: '专辑名' })
   albumName: string;
 
-  @Column({ comment: '音乐实体图片', nullable: true })
+  @Column({ comment: '封面', nullable: true })
   imgUrl: string;
 
   @Column({ comment: '音乐播放url', nullable: true })

@@ -8,7 +8,6 @@ import {
 import { UserLoginDto } from 'modules/user/dtos/user-login.dto';
 import { AuthService } from './services/auth.service';
 import { UserRegisterDto } from '../user/dtos/user-register.dto';
-import { User } from 'processors/database/entities/user.entity';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('auth')

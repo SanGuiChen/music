@@ -4,9 +4,9 @@ import { UserRegisterDto } from './dtos/user-register.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import _ from 'lodash';
 import { User } from 'processors/database/entities/user.entity';
 import { decodeMD5 } from 'transformers/codec.transformer';
+import { omit } from 'lodash';
 
 @Injectable()
 export class UserService {
@@ -15,7 +15,11 @@ export class UserService {
   ) {}
 
   async findOne(findData: FindOptionsWhere<User>): Promise<User | null> {
-    return this.userRepository.findOneBy(findData);
+    try {
+      return this.userRepository.findOneBy(findData);
+    } catch (e) {
+      throw new CustomError('ERROR Incorrect username or password');
+    }
   }
 
   async createUser(userRegisterDto: UserRegisterDto) {
@@ -36,7 +40,7 @@ export class UserService {
     try {
       return await this.userRepository.update(
         { email: userUpdateDto.email },
-        _.omit(userUpdateDto, ['email']),
+        omit(userUpdateDto, ['email']),
       );
     } catch (e) {
       throw new CustomError('Register User Failed');

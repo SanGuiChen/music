@@ -25,7 +25,7 @@ export class AuthService {
         token,
       };
     }
-    throw new HttpBadRequestError('The user name or password is incorrect');
+    throw new HttpBadRequestError('The userName or password is incorrect');
   }
 
   async createToken(user: User) {

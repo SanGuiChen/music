@@ -4,8 +4,8 @@ import ReactLazilyComponent from 'react-lazily-component';
 const ManagementRoutes: IRoute[] = [
   {
     pathname: '/search',
-    component: ReactLazilyComponent(() => import('@/pages/search')),
-    name: 'Welcome',
+    component: ReactLazilyComponent(() => import('@/pages/Search')),
+    name: 'Search',
     title: '音乐检索',
     meta: {
       requireAuth: true
@@ -13,9 +13,18 @@ const ManagementRoutes: IRoute[] = [
   },
   {
     pathname: '/offline',
-    name: 'Welcome',
+    name: 'Offline',
     title: '音乐下架',
-    component: ReactLazilyComponent(() => import('@/pages/offline')),
+    component: ReactLazilyComponent(() => import('@/pages/Offline')),
+    meta: {
+      requireAuth: true
+    }
+  },
+  {
+    pathname: '/script',
+    name: 'Script',
+    title: '脚本模块',
+    component: ReactLazilyComponent(() => import('@/pages/Script')),
     meta: {
       requireAuth: true
     }

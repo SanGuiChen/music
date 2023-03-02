@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Form, Input, message, Modal, Upload } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import { loginApi, registerApi } from '@/apis/User/user';
+import { loginApi, registerApi } from '@/apis/user/user';
 import _ from 'lodash';
 import { useRequest } from 'ahooks';
 import { MUSIC_TOKEN } from '@/constants';

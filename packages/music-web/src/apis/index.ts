@@ -3,9 +3,9 @@ import { message } from 'antd';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { showMessage } from './status';
 
-export interface IResponse {
+export interface IResponse<T> {
   code: number | string;
-  data: any;
+  data: T;
   msg: string;
 }
 
