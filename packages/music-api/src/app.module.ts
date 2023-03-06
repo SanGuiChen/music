@@ -2,9 +2,8 @@ import { ScriptModule } from './modules/script/script.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from 'processors/database/database.module';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
+import { ManageModule } from 'modules/manage/manage.module';
 
 @Module({
   imports: [
@@ -14,8 +13,9 @@ import { AuthModule } from './modules/auth/auth.module';
     DatabaseModule,
     AuthModule,
     ScriptModule,
+    ManageModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

@@ -4,7 +4,8 @@ import ReactLazilyComponent from 'react-lazily-component';
 const BaseRoutes: IRoute[] = [
   {
     pathname: '/index',
-    component: ReactLazilyComponent(() => import('@/pages/Base/Welcome'))
+    component: ReactLazilyComponent(() => import('@/pages/Base/Welcome')),
+    title: '首页'
   },
   {
     pathname: '/',

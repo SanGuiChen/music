@@ -9,7 +9,7 @@ import {
 
 export const searchApi = async (
   params: ISearchParams
-): Promise<IResponse<ISearchResponse[]>> => {
+): Promise<IResponse<ISearchResponse>> => {
   return axiosInstance.post('script/search', params).then((res) => res.data);
 };
 

@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-enum MusicObjectStatusEnum {
+export enum MusicObjectStatusEnum {
   IN_USE = 0,
   OFFLINE = 1,
 }

@@ -12,10 +12,10 @@ export class ScriptController {
 
   @Post('search')
   async searchByKeyWords(@Body() searchDto: SearchDto) {
-    const { keyWords } = searchDto;
-    return this.scriptService.Search(keyWords).pipe(
-      map((res) =>
-        res.data?.result?.songs?.map(({ id, name, ar, al }) => ({
+    const { keyWords, offset, limit } = searchDto;
+    return this.scriptService.Search(keyWords, offset, limit).pipe(
+      map((res) => ({
+        list: res.data?.result?.songs?.map(({ id, name, ar, al }) => ({
           songId: id ?? '-',
           songName: name ?? '-',
           artists:
@@ -26,7 +26,8 @@ export class ScriptController {
           imgUrl: !isEmpty(al) ? al?.picUrl ?? '-' : '-',
           playUrl: '-',
         })),
-      ),
+        total: res.data?.result?.songCount ?? 0,
+      })),
     );
   }
 

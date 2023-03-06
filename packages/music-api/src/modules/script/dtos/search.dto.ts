@@ -1,7 +1,15 @@
-import { IsArray, IsNotEmpty } from 'class-validator';
+import { IsArray, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class SearchDto {
   @IsArray()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'keywords is empty' })
   readonly keyWords: string[];
+
+  @IsNumber()
+  @IsNotEmpty({ message: 'offset is empty' })
+  readonly offset: number;
+
+  @IsNumber()
+  @IsNotEmpty({ message: 'limit is empty' })
+  readonly limit: number;
 }

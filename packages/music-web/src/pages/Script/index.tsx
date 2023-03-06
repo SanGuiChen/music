@@ -1,17 +1,19 @@
 import { getPlayUrlApi, searchApi, storageApi } from '@/apis/script';
 import { IStorageParams } from '@/apis/script/index.interface';
 import { uniqueIdGenerator } from '@/utils';
-import { useRequest } from 'ahooks';
-import { Input, Image, Typography, Button, message } from 'antd';
+import { useAntdTable, useRequest } from 'ahooks';
+import { Input, Image, Typography, Button, message, Form } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import Title from 'antd/es/typography/Title';
 import { omit } from 'lodash';
 import { useState } from 'react';
 import { clampedAll } from 'clamped-promise-all';
 import { CONCURRENT_LIMIT } from '@/constants';
+import { useTranslation } from 'react-i18next';
+import { useForm } from 'antd/es/form/Form';
 
-const { Search } = Input;
 const { Text } = Typography;
+const { Search } = Input;
 
 interface ISearchTable {
   key: React.Key;
@@ -27,115 +29,78 @@ interface ISearchTable {
 
 type KeyRecordMap = Record<string, IStorageParams>;
 
-const columns: ColumnsType<ISearchTable> = [
-  {
-    title: '歌曲Id',
-    dataIndex: 'songId',
-    render: (text) => text ?? '-'
-  },
-  {
-    title: '歌曲名',
-    dataIndex: 'songName',
-    render: (text) =>
-      (
-        <Text ellipsis={{ tooltip: text }} className="font-bold w-20">
-          {text}
-        </Text>
-      ) ?? '-'
-  },
-  {
-    title: '艺人Id',
-    dataIndex: 'artistId',
-    render: (text) => text ?? '-'
-  },
-  {
-    title: '艺人名',
-    dataIndex: 'artistName',
-    render: (text) =>
-      (
-        <Text ellipsis={{ tooltip: text }} className="font-bold w-20">
-          {text}
-        </Text>
-      ) ?? '-'
-  },
-  {
-    title: '专辑Id',
-    dataIndex: 'albumId',
-    render: (text) => text ?? '-'
-  },
-  {
-    title: '专辑名',
-    dataIndex: 'albumName',
-    render: (text) =>
-      (
-        <Text ellipsis={{ tooltip: text }} className="font-bold w-20">
-          {text}
-        </Text>
-      ) ?? '-'
-  },
-  {
-    title: '封面',
-    dataIndex: 'imgUrl',
-    render: (text) => (text ? <Image src={text} width={30} /> : '-')
-  },
-  {
-    title: '播放链接',
-    dataIndex: 'playUrl',
-    render: (text) =>
-      text ? (
-        <audio controls className="w-50 h-10">
-          <source src={text} type="audio/mpeg" />
-          您的浏览器不支持 audio 元素。
-        </audio>
-      ) : (
-        '-'
-      )
-  },
-  {
-    title: '操作',
-    dataIndex: 'operation',
-    render: () => <>operation</>
-  }
-];
-
 const Script: React.FC = () => {
   const tableitemKeyGenerator = uniqueIdGenerator('table-item');
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [keyTableItemMap, setKeyTableItemMap] = useState<KeyRecordMap>({});
+  const { t } = useTranslation();
+  const [form] = useForm();
 
-  const { loading, runAsync, data } = useRequest(
-    async (keyWords: string[]) => {
-      const { data = [] } = await searchApi({ keyWords });
-      const songIds = data.map(({ songId }) => songId);
-      const { data: playUrlMap } = await getPlayUrlApi({
-        songIds
-      });
-      const map: KeyRecordMap = {};
-
-      const res = data.map((item) => {
-        const key = tableitemKeyGenerator.next().value;
-        const tableItem = {
-          ...omit(item, ['artists', 'playUrl']),
-          artistName: item.artists
-            .map(({ artistName }) => artistName)
-            .join(';'),
-          artistId: item.artists.map(({ artistId }) => artistId).join(';'),
-          playUrl: playUrlMap[item.songId] ? playUrlMap[item.songId] : '-'
-        };
-        map[key] = tableItem;
-
-        return {
-          key,
-          ...tableItem
-        };
-      });
-      setKeyTableItemMap(map);
-      return res;
+  const columns: ColumnsType<ISearchTable> = [
+    {
+      title: t('SONG_ID'),
+      dataIndex: 'songId',
+      render: (text) => text ?? '-'
     },
     {
-      manual: true
+      title: t('SONG_NAME'),
+      dataIndex: 'songName',
+      render: (text) =>
+        (
+          <Text ellipsis={{ tooltip: text }} className="font-bold w-20">
+            {text}
+          </Text>
+        ) ?? '-'
+    },
+    {
+      title: t('ARTIST_ID'),
+      dataIndex: 'artistId',
+      render: (text) => text ?? '-'
+    },
+    {
+      title: t('ARTIST_NAME'),
+      dataIndex: 'artistName',
+      render: (text) =>
+        (
+          <Text ellipsis={{ tooltip: text }} className="font-bold w-20">
+            {text}
+          </Text>
+        ) ?? '-'
+    },
+    {
+      title: t('ALBUM_ID'),
+      dataIndex: 'albumId',
+      render: (text) => text ?? '-'
+    },
+    {
+      title: t('ALBUM_NAME'),
+      dataIndex: 'albumName',
+      render: (text) =>
+        (
+          <Text ellipsis={{ tooltip: text }} className="font-bold w-20">
+            {text}
+          </Text>
+        ) ?? '-'
+    },
+    {
+      title: t('COVER'),
+      dataIndex: 'imgUrl',
+      render: (text) => (text ? <Image src={text} width={30} /> : '-')
+    },
+    {
+      title: t('PLAY_URL'),
+      dataIndex: 'playUrl',
+      render: (text) =>
+        text ? (
+          <audio controls className="w-50 h-10">
+            <source src={text} type="audio/mpeg" />
+            Your browser does not support Audio Tag
+          </audio>
+        ) : (
+          '-'
+        )
     }
-  );
+  ];
 
   const { loading: storaging, runAsync: storage } = useRequest(
     async (params: IStorageParams[]) => {
@@ -147,22 +112,77 @@ const Script: React.FC = () => {
         CONCURRENT_LIMIT
       );
       if (res.length === params.length) {
-        message.success('全部入库成功');
+        message.success(t('STORAGE_ALL_SUCCESS'));
       } else {
-        message.error('部分入库失败');
+        message.error(t('STORAGE_SOME_FAILED'));
       }
       setSelectedRowKeys([]);
     },
     { manual: true }
   );
 
-  const onSearch = async (value: string) => {
-    const keyWords = value.split(' ');
-    await runAsync(keyWords);
+  const getTableData = async (
+    {
+      current,
+      pageSize
+    }: {
+      current: number;
+      pageSize: number;
+    },
+    formData: { keywords: string }
+  ): Promise<{ list: ISearchTable[]; total: number }> => {
+    const { keywords } = formData;
+    if (!keywords) {
+      return {
+        list: [],
+        total: 0
+      };
+    }
+    const { data } = await searchApi({
+      keyWords: keywords.split(' '),
+      offset: current - 1,
+      limit: pageSize
+    });
+    const { list, total } = data;
+    const songIds = list.map(({ songId }) => songId);
+    const { data: playUrlMap } = await getPlayUrlApi({
+      songIds
+    });
+    const map: KeyRecordMap = {};
+
+    const res = list.map((item) => {
+      const key = tableitemKeyGenerator.next().value;
+      const tableItem = {
+        ...omit(item, ['artists', 'playUrl']),
+        artistName: item.artists.map(({ artistName }) => artistName).join(';'),
+        artistId: item.artists.map(({ artistId }) => artistId).join(';'),
+        playUrl: playUrlMap[item.songId] ? playUrlMap[item.songId] : '-'
+      };
+      map[key] = tableItem;
+
+      return {
+        key,
+        ...tableItem
+      };
+    });
+    setKeyTableItemMap(map);
+    return {
+      list: res,
+      total
+    };
   };
+
+  const { tableProps, search } = useAntdTable(getTableData, {
+    defaultPageSize: 10,
+    form
+  });
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys);
+  };
+
+  const handleSearch = async () => {
+    search.submit();
   };
 
   const handleStorage = async () => {
@@ -172,14 +192,19 @@ const Script: React.FC = () => {
 
   return (
     <div className="bg-white w-full h-full rounded p-5">
-      <Title level={5}>关键字搜索</Title>
-      <Search
-        placeholder="可搜索音乐 / 专辑 / 歌手 空格区分"
-        className="w-200"
-        allowClear
-        onSearch={onSearch}
-        loading={loading}
-      />
+      <Title level={5}>{t('KEYWORDS_SEARCH')}</Title>
+      <Form form={form} layout="inline">
+        <Form.Item name="keywords" className="w-full">
+          <Search
+            placeholder={`${t('CAN_SEARCH_SONG_ALBUM_ARTIST_ETC')} ${t(
+              'SPACE_DIFF'
+            )}`}
+            onSearch={handleSearch}
+            allowClear
+          />
+        </Form.Item>
+      </Form>
+
       <Button
         className="mt-5"
         type="primary"
@@ -187,13 +212,15 @@ const Script: React.FC = () => {
         loading={storaging}
         disabled={!selectedRowKeys.length}
       >
-        入库{selectedRowKeys.length ? `${selectedRowKeys.length}首歌曲` : ''}
+        {t('STORAGE')}
+        {selectedRowKeys.length
+          ? `${selectedRowKeys.length}${t('SOME_SONGS')}`
+          : ''}
       </Button>
       <Table
         className="mt-5"
         columns={columns}
-        dataSource={data ?? []}
-        loading={loading}
+        {...tableProps}
         rowSelection={{ selectedRowKeys, onChange: onSelectChange }}
       />
     </div>

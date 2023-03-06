@@ -1,5 +1,7 @@
 export interface ISearchParams {
   keyWords: string[];
+  offset: number;
+  limit: number;
 }
 
 interface IArtist {
@@ -8,6 +10,11 @@ interface IArtist {
 }
 
 export interface ISearchResponse {
+  list: ISearchList[];
+  total: number;
+}
+
+interface ISearchList {
   songId: number;
   songName: string;
   artists: IArtist[];

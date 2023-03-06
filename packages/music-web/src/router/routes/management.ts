@@ -12,15 +12,6 @@ const ManagementRoutes: IRoute[] = [
     }
   },
   {
-    pathname: '/offline',
-    name: 'Offline',
-    title: '音乐下架',
-    component: ReactLazilyComponent(() => import('@/pages/Offline')),
-    meta: {
-      requireAuth: true
-    }
-  },
-  {
     pathname: '/script',
     name: 'Script',
     title: '脚本模块',

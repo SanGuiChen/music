@@ -20,9 +20,13 @@ export class ScriptService {
       this.configService.get('MUSIC_SCRIPT_SERVICE') || 'http//localhost:3001';
   }
 
-  Search(keywords: string[]) {
+  Search(keywords: string[], offset: number, limit: number) {
     const searchUrl = `${this.scriptHost}/cloudsearch`;
-    return this.httpService.get(`${searchUrl}?keywords=${keywords.join(' ')}`);
+    return this.httpService.get(
+      `${searchUrl}?keywords=${keywords.join(
+        ' ',
+      )}&&offset=${offset}&&limit=${limit}`,
+    );
   }
 
   getPlayUrls(songIds: string[]) {
@@ -30,15 +34,19 @@ export class ScriptService {
     return this.httpService.get(`${url}?id=${songIds.join(',')}`);
   }
 
-  async storage(song: StorageDto) {
-    const songId = `${song.songId}`;
-    const albumId = `${song.albumId}`;
-    const artistId = song.artistId;
-    const object = await this.musicObjectRepository.findOneBy({
+  async isStoraged(songId: string, albumId: string, artistId: string) {
+    return await this.musicObjectRepository.findOneBy({
       songId,
       albumId,
       artistId,
     });
+  }
+
+  async storage(song: StorageDto) {
+    const songId = `${song.songId}`;
+    const albumId = `${song.albumId}`;
+    const artistId = song.artistId;
+    const object = await this.isStoraged(songId, albumId, artistId);
     if (!object) {
       const musicObject = this.musicObjectRepository.create({
         ...song,
