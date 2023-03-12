@@ -8,10 +8,11 @@ import Content from './containers/Content';
 import Header from './containers/Header';
 import LeftSider from './containers/LeftSider';
 import { Locale } from 'antd/es/locale-provider';
-import { isLogin } from './utils';
 import { LangEnum } from './locales/config';
 import { LANG } from './constants';
 import { useTranslation } from 'react-i18next';
+import { useUserStore } from './store/user';
+import { isEmpty } from 'lodash';
 
 type ThemeData = {
   colorPrimary: string;
@@ -25,6 +26,7 @@ const App: React.FC = () => {
   const [data, setData] = useState<ThemeData>(defaultData);
   const [lang, setLang] = useState<Locale>(zhCN);
   const { i18n } = useTranslation();
+  const user = useUserStore((state) => state.user);
 
   useEffect(() => {
     const lang = window.localStorage.getItem(LANG);
@@ -48,7 +50,7 @@ const App: React.FC = () => {
       }}
     >
       <Layout style={{ height: '100vh' }}>
-        {!isLogin() && <Login />}
+        {isEmpty(user) && <Login />}
         <Header setLang={setLang} />
         <Layout>
           <LeftSider />

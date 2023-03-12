@@ -7,7 +7,7 @@ export interface TokenDto {
 
 export interface JwtPayload {
   id: string;
-  userName: string;
+  email: string;
 }
 
 export interface ValidateTokenResponseDto {

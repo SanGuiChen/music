@@ -12,7 +12,7 @@ import {
 import { Menu, MenuProps } from 'antd';
 import Sider from 'antd/es/layout/Sider';
 import _ from 'lodash';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -31,88 +31,91 @@ const generateMenuId = uniqueIdGenerator('menu_item');
 const Index = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [openKeys, setOpenKeys] = useState<string[]>([]);
 
-  const items: IMenuItem[] = [
-    {
-      label: t('METADATA_MANAGEMENT'),
-      icon: <SettingOutlined />,
-      children: [
-        {
-          label: t('MUSIC_RETRIEVAL'),
-          url: '/search',
-          icon: <SearchOutlined />
-        }
-      ]
-    },
-    {
-      label: t('MUSIC_PRODUCT'),
-      icon: <PicRightOutlined />,
-      children: [
-        {
-          label: t('MUSIC_PRODUCT'),
-          icon: <EditOutlined />
-        },
-        {
-          label: t('MUSIC_REVIEW'),
-          icon: <ScissorOutlined />
-        },
-        {
-          label: t('MUSIC_TASK'),
-          icon: <FileOutlined />
-        },
-        {
-          label: t('MUSIC_SCRIPT'),
-          url: '/script',
-          icon: <DownloadOutlined />
-        }
-      ]
-    }
-  ];
+  const items: IMenuItem[] = useMemo(
+    () => [
+      {
+        label: t('METADATA_MANAGEMENT'),
+        icon: <SettingOutlined />,
+        children: [
+          {
+            label: t('MUSIC_RETRIEVAL'),
+            url: '/search',
+            icon: <SearchOutlined />
+          }
+        ]
+      },
+      {
+        label: t('MUSIC_PRODUCT'),
+        icon: <PicRightOutlined />,
+        children: [
+          {
+            label: t('MUSIC_PRODUCT'),
+            icon: <EditOutlined />
+          },
+          {
+            label: t('MUSIC_REVIEW'),
+            icon: <ScissorOutlined />
+          },
+          {
+            label: t('MUSIC_TASK'),
+            icon: <FileOutlined />
+          },
+          {
+            label: t('MUSIC_SCRIPT'),
+            url: '/script',
+            icon: <DownloadOutlined />
+          }
+        ]
+      }
+    ],
+    [i18n.language]
+  );
 
-  const openKeys: string[] = [];
-
-  const menuItems = useMemo(
-    (): MenuItem[] =>
-      items.map((item) => {
-        const key = generateMenuId.next().value;
-        openKeys.push(key);
-        if (item?.url) {
-          urlObj[key] = item.url;
-          keyObj[item.url] = key;
-        }
-        if (item?.children) {
-          const childrenItems = item.children.map((i) => {
-            const childrenKey = generateMenuId.next().value;
-            if (i?.url) {
-              urlObj[childrenKey] = i.url;
-              keyObj[i.url] = childrenKey;
-            }
-            return {
-              ...i,
-              key: childrenKey
-            };
-          });
+  const menuItems = useMemo((): MenuItem[] => {
+    const opens: string[] = [];
+    const menus = items.map((item) => {
+      const key = generateMenuId.next().value;
+      opens.push(key);
+      if (item?.url) {
+        urlObj[key] = item.url;
+        keyObj[item.url] = key;
+      }
+      if (item?.children) {
+        const childrenItems = item.children.map((i) => {
+          const childrenKey = generateMenuId.next().value;
+          if (i?.url) {
+            urlObj[childrenKey] = i.url;
+            keyObj[i.url] = childrenKey;
+          }
           return {
-            ...item,
-            children: childrenItems,
-            key
+            ...i,
+            key: childrenKey
           };
-        }
+        });
         return {
           ...item,
+          children: childrenItems,
           key
         };
-      }),
-    []
-  );
+      }
+      return {
+        ...item,
+        key
+      };
+    });
+    setOpenKeys([...opens]);
+    return menus;
+  }, [i18n.language]);
 
   return (
     <Sider width={200} collapsible theme="light">
       <Menu
         mode="inline"
-        defaultOpenKeys={openKeys}
         style={{ height: '100%', borderRight: 0 }}
+        openKeys={openKeys}
         selectedKeys={keyObj[pathname] ? [keyObj[pathname]] : undefined}
         items={menuItems}
         onClick={({ key }) => {

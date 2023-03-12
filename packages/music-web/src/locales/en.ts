@@ -44,6 +44,15 @@ const en: LocaleInterface = {
   OFFLINE: 'Offline',
   SUCCESS: 'Success',
   FAILED: 'Failed',
-  SHELVES: 'Shelves'
+  SHELVES: 'Shelves',
+  ADMIN: 'Admin',
+  GUEST: 'Guest',
+  USER: 'User',
+  USER_INFO_EDIT: 'Edit user info',
+  SUBMIT: 'Submit',
+  CANCEL: 'Cancel',
+  ROLE: 'Role',
+  NOT_UPDATE: 'Not update',
+  UPDATE_SUCCESS: 'Update success'
 };
 export default en;

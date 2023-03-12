@@ -22,7 +22,8 @@
     "react-dom": "^18.2.0",
     "react-i18next": "^12.1.1",
     "react-lazily-component": "^0.3.0",
-    "react-router-dom": "^6.4.3"
+    "react-router-dom": "^6.4.3",
+    "zustand": "^4.3.6"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.1.1",

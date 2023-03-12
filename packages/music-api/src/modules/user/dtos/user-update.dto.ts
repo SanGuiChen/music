@@ -1,10 +1,14 @@
-import { IsEmail, IsOptional, Length } from 'class-validator';
+import { IsEmail, IsOptional, Length, IsNotEmpty } from 'class-validator';
 import { UserStatusEnum } from 'processors/database/entities/user.entity';
 
 export class UserUpdateDto {
+  @IsNotEmpty({ message: 'id is not empty' })
+  readonly id: string;
+
   @IsEmail({
     message: 'UserName must be in email format',
   })
+  @IsOptional()
   readonly email: string;
 
   @IsOptional()

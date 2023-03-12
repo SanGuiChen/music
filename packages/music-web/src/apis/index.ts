@@ -18,10 +18,10 @@ const axiosInstance: AxiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config: AxiosRequestConfig) => {
     const token = localStorage.getItem(MUSIC_TOKEN);
-    if (token) {
-      config.headers['authorization'] = `Bearer ${token}`;
+    if (token && config?.headers) {
+      config.headers['Authorization'] = `Bearer ${token}`;
     }
-    return config;
+    return config as any;
   },
   (error) => {
     return Promise.reject(error);

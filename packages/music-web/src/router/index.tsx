@@ -1,9 +1,13 @@
-import { FC, useEffect } from 'react';
+import { FC, Suspense, useEffect } from 'react';
 import { Route, Routes, useNavigate, Navigate } from 'react-router-dom';
 import { IRoute } from '@/types/router';
 import routes from './routes';
 import { isLogin } from '@/utils';
 import notFoundIcon from '@/assets/404.svg';
+import { Spin } from 'antd';
+import { useRequest } from 'ahooks';
+import { isEmpty } from 'lodash';
+import { useUserStore } from '@/store/user';
 
 const ErrorBlock = () => {
   return (
@@ -22,12 +26,22 @@ const ErrorBlock = () => {
 const RouteDecorator = (props: { route: IRoute }) => {
   const { route } = props;
   const navigate = useNavigate();
+  const setUser = useUserStore((state) => state.setUser);
+
+  const { data: loginVisible } = useRequest(async () => {
+    const user = await isLogin();
+    if (!isEmpty(user)) {
+      setUser(user);
+      return false;
+    }
+    return true;
+  });
 
   useEffect(() => {
     document.title = `Music-${route.title}`;
     // 鉴权路由守卫
     if (route.meta?.requireAuth) {
-      if (!isLogin()) {
+      if (loginVisible) {
         navigate('/', { state: { redirect: route.pathname } });
       }
     }
@@ -48,7 +62,13 @@ const RouterComponent: FC = () => (
       <Route
         key={route.pathname}
         path={route.pathname}
-        element={<RouteDecorator route={route} />}
+        element={
+          <Suspense
+            fallback={<Spin style={{ width: '100%', height: '100%' }} />}
+          >
+            <RouteDecorator route={route} />
+          </Suspense>
+        }
       />
     ))}
   </Routes>

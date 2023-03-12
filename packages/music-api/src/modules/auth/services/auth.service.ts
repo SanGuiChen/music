@@ -1,12 +1,14 @@
 import { User } from '../../../processors/database/entities/user.entity';
 import { Injectable } from '@nestjs/common';
-import _ from 'lodash';
+import _, { omit } from 'lodash';
 import { UserLoginDto } from 'modules/user/dtos/user-login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { compareMD5 } from 'transformers/codec.transformer';
 import { UserService } from 'modules/user/user.service';
 import { UserRegisterDto } from 'modules/user/dtos/user-register.dto';
 import { HttpBadRequestError } from 'errors/bad-request.error';
+import { JwtPayload } from '../interface';
+import { UserUpdateDto } from 'modules/user/dtos/user-update.dto';
 
 @Injectable()
 export class AuthService {
@@ -29,7 +31,7 @@ export class AuthService {
   }
 
   async createToken(user: User) {
-    const payload = { username: user.email, sub: user.id };
+    const payload: JwtPayload = { email: user.email, id: user.id };
     return this.jwtService.sign(payload);
   }
 
@@ -41,5 +43,16 @@ export class AuthService {
     }
     const user = await this.userService.createUser(params);
     return user;
+  }
+
+  async updateUserInfo(params: UserUpdateDto) {
+    if (params?.email) {
+      const existUser = await this.userService.findOne({ email: params.email });
+      if (existUser) {
+        throw new HttpBadRequestError('The email already exists');
+      }
+    }
+
+    return this.userService.updateUser(params);
   }
 }

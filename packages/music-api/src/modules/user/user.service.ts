@@ -36,14 +36,14 @@ export class UserService {
     }
   }
 
-  async modifyUser(userUpdateDto: UserUpdateDto) {
+  async updateUser(userUpdateDto: UserUpdateDto) {
     try {
       return await this.userRepository.update(
-        { email: userUpdateDto.email },
-        omit(userUpdateDto, ['email']),
+        { id: userUpdateDto.id },
+        omit(userUpdateDto, ['id']),
       );
     } catch (e) {
-      throw new CustomError('Register User Failed');
+      throw new CustomError('Update User Failed');
     }
   }
 }

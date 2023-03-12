@@ -44,7 +44,16 @@ const zh_CN: LocaleInterface = {
   OFFLINE: '下架',
   SUCCESS: '成功',
   FAILED: '失败',
-  SHELVES: '上架'
+  SHELVES: '上架',
+  USER: '用户',
+  ADMIN: '管理员',
+  GUEST: '游客',
+  USER_INFO_EDIT: '用户信息编辑',
+  SUBMIT: '提交',
+  CANCEL: '取消',
+  ROLE: '角色',
+  NOT_UPDATE: '暂无更新',
+  UPDATE_SUCCESS: '更新成功'
 };
 
 export default zh_CN;

@@ -1,5 +1,7 @@
+import { getUserInfoApi } from '@/apis/user/user';
 import { MUSIC_TOKEN } from '@/constants';
-import { isString } from 'lodash';
+import { User } from '@/store/user';
+import { isString, isEmpty } from 'lodash';
 
 export function* uniqueIdGenerator(prefix: string): Generator<string> {
   let count = 0;
@@ -8,7 +10,14 @@ export function* uniqueIdGenerator(prefix: string): Generator<string> {
   }
 }
 
-export const isLogin = () => {
+export const isLogin = async () => {
   const token = window.localStorage.getItem(MUSIC_TOKEN);
-  return isString(token);
+
+  if (isString(token)) {
+    const { data } = await getUserInfoApi();
+    if (data && !isEmpty(data)) {
+      return data;
+    }
+  }
+  return {} as User;
 };

@@ -43,4 +43,13 @@ export interface LocaleInterface {
   SUCCESS: string;
   FAILED: string;
   SHELVES: string;
+  USER: string;
+  ADMIN: string;
+  GUEST: string;
+  USER_INFO_EDIT: string;
+  SUBMIT: string;
+  CANCEL: string;
+  ROLE: string;
+  NOT_UPDATE: string;
+  UPDATE_SUCCESS: string;
 }

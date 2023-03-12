@@ -1,7 +1,15 @@
 import MusicSvg from '@/assets/music.svg';
 import I18nIcon from '@/assets/i18n.svg';
-import { Button, Dropdown, MenuProps, Space, Tooltip } from 'antd';
-import { GithubFilled, UserOutlined } from '@ant-design/icons';
+import {
+  Avatar,
+  Button,
+  Dropdown,
+  MenuProps,
+  Space,
+  Tooltip,
+  Typography
+} from 'antd';
+import { EditOutlined, GithubFilled } from '@ant-design/icons';
 import { uniqueIdGenerator } from '@/utils';
 import { useTranslation } from 'react-i18next';
 import { LangEnum } from '@/locales/config';
@@ -10,34 +18,62 @@ import { Locale } from 'antd/es/locale';
 import zhCN from 'antd/locale/zh_CN';
 import enUS from 'antd/locale/en_US';
 import { useNavigate } from 'react-router-dom';
+import { RoleEnumTextMap, useUserStore } from '@/store/user';
+import EditUserModal from '@/pages/User';
+import { useMemo, useState } from 'react';
 
 interface IProps {
   setLang: React.Dispatch<React.SetStateAction<Locale>>;
 }
 
+const { Text } = Typography;
+
 const Index: React.FC<IProps> = ({ setLang }) => {
   const menuGenerateId = uniqueIdGenerator('user-menu-item');
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const user = useUserStore((state) => state.user);
+  const [editModalVisible, setEditModalVisible] = useState<boolean>(false);
 
   const language = i18n.language;
 
   const items: MenuProps['items'] = [
     {
       key: menuGenerateId.next().value,
-      label: <>用户名：</>
+      label: (
+        <Text style={{ width: '100%' }} ellipsis={{ tooltip: user.nickname }}>
+          {t('NICKNAME')}：{user.nickname}
+        </Text>
+      )
     },
     {
       key: menuGenerateId.next().value,
-      label: <>用户名：</>
+      label: (
+        <Text style={{ width: '100%' }} ellipsis={{ tooltip: user.email }}>
+          {t('EMAIL')}：{user.email}
+        </Text>
+      )
     },
     {
       key: menuGenerateId.next().value,
-      label: <>用户名：</>
+      label: (
+        <>
+          {t('ROLE')}：{RoleEnumTextMap(user.role) || '-'}
+        </>
+      )
     },
     {
       key: menuGenerateId.next().value,
-      label: <>用户名：</>
+      label: (
+        <div
+          className="flex justify-center"
+          onClick={() => {
+            setEditModalVisible(true);
+          }}
+        >
+          <Button icon={<EditOutlined />}>编辑</Button>
+        </div>
+      )
     }
   ];
 
@@ -91,11 +127,15 @@ const Index: React.FC<IProps> = ({ setLang }) => {
         </Tooltip>
 
         <Dropdown menu={{ items }}>
-          <Button type="text">
-            <UserOutlined width={20} />
-          </Button>
+          <Avatar src={user?.avatar} style={{ cursor: 'pointer' }} />
         </Dropdown>
       </Space>
+      <EditUserModal
+        visible={editModalVisible}
+        onCancel={() => {
+          setEditModalVisible(false);
+        }}
+      />
     </div>
   );
 };

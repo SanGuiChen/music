@@ -3,10 +3,15 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtPayload } from '../interface';
+import { UserService } from 'modules/user/user.service';
+import { HttpUnauthorizedError } from 'errors/unauthorized.error';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService,
+    private userService: UserService,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -15,6 +20,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: JwtPayload) {
-    return { userId: payload.id, userName: payload.userName };
+    const { id, email } = payload;
+    const existUser = await this.userService.findOne({
+      id,
+      email,
+    });
+    if (!existUser) {
+      throw new HttpUnauthorizedError('token已过期');
+    }
+    return existUser;
   }
 }
