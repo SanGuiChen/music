@@ -25,7 +25,9 @@ export default defineConfig({
       'react-dom',
       'react-router-dom',
       'clamped-promise-all',
-      'zustand'
+      'zustand',
+      'slate',
+      'slate-react'
     ]
   }
 });

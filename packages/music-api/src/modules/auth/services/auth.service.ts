@@ -1,6 +1,5 @@
 import { User } from '../../../processors/database/entities/user.entity';
 import { Injectable } from '@nestjs/common';
-import _, { omit } from 'lodash';
 import { UserLoginDto } from 'modules/user/dtos/user-login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { compareMD5 } from 'transformers/codec.transformer';

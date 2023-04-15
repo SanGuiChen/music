@@ -23,6 +23,8 @@
     "react-i18next": "^12.1.1",
     "react-lazily-component": "^0.3.0",
     "react-router-dom": "^6.4.3",
+    "slate": "^0.93.0",
+    "slate-react": "^0.93.0",
     "zustand": "^4.3.6"
   },
   "devDependencies": {

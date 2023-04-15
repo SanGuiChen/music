@@ -53,14 +53,17 @@ const Index = () => {
         children: [
           {
             label: t('MUSIC_PRODUCT'),
+            url: '/production',
             icon: <EditOutlined />
           },
           {
             label: t('MUSIC_REVIEW'),
+            url: '/review',
             icon: <ScissorOutlined />
           },
           {
             label: t('MUSIC_TASK'),
+            url: '/task',
             icon: <FileOutlined />
           },
           {

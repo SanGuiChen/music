@@ -115,6 +115,7 @@ const Login: React.FC = () => {
             },
             { type: 'email' }
           ]}
+          initialValue={'1831330711@qq.com'}
         >
           <Input />
         </Form.Item>
@@ -132,6 +133,7 @@ const Login: React.FC = () => {
               max: 16
             }
           ]}
+          initialValue={'12345678'}
         >
           <Input.Password />
         </Form.Item>

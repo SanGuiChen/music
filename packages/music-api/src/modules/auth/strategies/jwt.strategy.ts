@@ -26,7 +26,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       email,
     });
     if (!existUser) {
-      throw new HttpUnauthorizedError('token已过期');
+      throw new HttpUnauthorizedError('登陆态已过期');
     }
     return existUser;
   }

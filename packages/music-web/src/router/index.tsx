@@ -40,11 +40,11 @@ const RouteDecorator = (props: { route: IRoute }) => {
   useEffect(() => {
     document.title = `Music-${route.title}`;
     // 鉴权路由守卫
-    if (route.meta?.requireAuth) {
-      if (loginVisible) {
-        navigate('/', { state: { redirect: route.pathname } });
-      }
-    }
+    // if (route.meta?.requireAuth) {
+    //   if (loginVisible) {
+    //     navigate('/', { state: { redirect: route.pathname } });
+    //   }
+    // }
 
     // 自定义路由守卫
     route.beforeCreate && route.beforeCreate(route);
@@ -55,23 +55,19 @@ const RouteDecorator = (props: { route: IRoute }) => {
 };
 
 const RouterComponent: FC = () => (
-  <Routes>
-    <Route path="/index" element={<Navigate to="/" />} />
-    <Route path="*" element={<ErrorBlock />} />
-    {routes.map((route) => (
-      <Route
-        key={route.pathname}
-        path={route.pathname}
-        element={
-          <Suspense
-            fallback={<Spin style={{ width: '100%', height: '100%' }} />}
-          >
-            <RouteDecorator route={route} />
-          </Suspense>
-        }
-      />
-    ))}
-  </Routes>
+  <Suspense fallback={<Spin style={{ width: '100%', height: '100%' }} />}>
+    <Routes>
+      <Route path="/index" element={<Navigate to="/" />} />
+      <Route path="*" element={<ErrorBlock />} />
+      {routes.map((route) => (
+        <Route
+          key={route.pathname}
+          path={route.pathname}
+          element={<RouteDecorator route={route} />}
+        />
+      ))}
+    </Routes>
+  </Suspense>
 );
 
 export default RouterComponent;
