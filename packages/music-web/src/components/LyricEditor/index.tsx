@@ -27,29 +27,14 @@ enum KeyBoardCode {
 const LyricEditor: React.FC<IProps> = ({ initialContent }) => {
   const lyricPlayerRef = useRef<HTMLAudioElement>(null);
 
-  const [editor, setEditor] = useState<BaseEditor & ReactEditor>(
-    withReact(createEditor())
-  );
+  const editor = useMemo(() => withReact(createEditor()), []);
   // 跟踪编辑器中 value 的值。
   const [content, setContent] = useState<Node[]>(initialContent ?? []);
-  const [uploadLyric, setUploadLyric] = useState<string>('');
 
   const [playUrl, setPlayUrl] = useState<string>('');
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isPlay, setIsPlay] = useState<boolean>(false);
   const [fileName, setFileName] = useState<string>('');
-
-  useEffect(() => {
-    if (uploadLyric.length > 0) {
-      const newEditor = withReact(createEditor());
-      setContent(
-        uploadLyric
-          .split('\n')
-          .map((text) => ({ type: 'text', children: [{ text }] }))
-      );
-      setEditor(newEditor);
-    }
-  }, [uploadLyric]);
 
   const renderElement = useCallback(
     ({ attributes, children, element }: any) => {
@@ -63,6 +48,7 @@ const LyricEditor: React.FC<IProps> = ({ initialContent }) => {
                   ? 'bg-cyan-200 p-0.5 rounded mb-0.5'
                   : ' p-0.5 rounded mb-0.5'
               }
+              style={{ height: 20 }}
             >
               {children}
             </div>
@@ -139,42 +125,23 @@ const LyricEditor: React.FC<IProps> = ({ initialContent }) => {
   };
 
   const handleDownload = () => {
-    const contentRef = true;
-    if (contentRef) {
-      const text = '';
-      const element = document.createElement('a');
-      element.setAttribute(
-        'href',
-        'data:text/plain;charset=utf-8,' + encodeURIComponent(text)
-      );
-      element.setAttribute('download', fileName);
-      console.log(fileName);
-      console.log(text);
+    const text = content.map((n) => Node.string(n)).join('\n');
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
 
-      element.style.display = 'none';
-      document.body.appendChild(element);
-
-      element.click();
-
-      document.body.removeChild(element);
-    }
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${fileName}.lrc`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   const handlePlay = async () => {
     await lyricPlayerRef.current?.play();
-    setIsPlay(true);
-    Transforms.setNodes(
-      editor,
-      // @ts-ignore
-      { isHightLight: true },
-      { at: [currentIndex] }
-    );
-    ReactEditor.focus(editor);
   };
 
   const handlePause = () => {
     lyricPlayerRef.current?.pause();
-    setIsPlay(false);
   };
 
   const reMakeLyric = async () => {
@@ -186,14 +153,6 @@ const LyricEditor: React.FC<IProps> = ({ initialContent }) => {
     if (player) {
       player.currentTime = 0;
       await player.play();
-      setIsPlay(true);
-      Transforms.setNodes(
-        editor,
-        // @ts-ignore
-        { isHightLight: true },
-        { at: [0] }
-      );
-      ReactEditor.focus(editor);
     }
   };
 
@@ -202,18 +161,6 @@ const LyricEditor: React.FC<IProps> = ({ initialContent }) => {
     setCurrentIndex(index);
     Transforms.removeNodes(editor, { at: [index, 0] });
     lyricPlayerRef.current;
-  };
-
-  const readLyricContentByUpload = (file: File): Promise<string> => {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = function (event) {
-        const contents = event.target?.result as string;
-        resolve(contents);
-      };
-
-      reader.readAsText(file);
-    });
   };
 
   return (
@@ -283,8 +230,41 @@ const LyricEditor: React.FC<IProps> = ({ initialContent }) => {
           </Upload>
           <Upload
             beforeUpload={async (file) => {
-              const lyric = await readLyricContentByUpload(file);
-              setUploadLyric(lyric);
+              const lyric = await file.text();
+              const newNodes = lyric
+                .split('\n')
+                .filter((text) => text.trim().length > 0)
+                .map((text) => ({ type: 'text', children: [{ text }] }));
+              Transforms.select(editor, {
+                anchor: { path: [0, 0], offset: 0 },
+                focus: {
+                  path: [
+                    content.length - 1,
+                    // @ts-ignore
+                    content[content.length - 1].children.length - 1
+                  ],
+                  offset:
+                    // @ts-ignore
+                    content[content.length - 1].children[
+                      // @ts-ignore
+                      content[content.length - 1].children.length - 1
+                    ].text.length
+                }
+              });
+
+              Transforms.insertNodes(editor, newNodes);
+              // Remove the first paragraph node's empty line if it exists
+              // @ts-ignore
+              if (editor.children[0].children[0].text === '') {
+                Transforms.removeNodes(editor, {
+                  at: [0]
+                });
+
+                // Merge the first text node of the second paragraph node with the last text node of the previous node
+                Transforms.mergeNodes(editor, {
+                  at: [0]
+                });
+              }
               return false;
             }}
             showUploadList={false}
@@ -303,7 +283,16 @@ const LyricEditor: React.FC<IProps> = ({ initialContent }) => {
           className="w-full"
           ref={lyricPlayerRef}
           onPlay={() => {
-            setIsPlay(true);
+            if (currentIndex < content.length) {
+              setIsPlay(true);
+              ReactEditor.focus(editor);
+              Transforms.setNodes(
+                editor,
+                // @ts-ignore
+                { isHightLight: true },
+                { at: [currentIndex] }
+              );
+            }
           }}
           onPause={() => setIsPlay(false)}
         >
