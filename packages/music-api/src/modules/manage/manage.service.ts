@@ -4,7 +4,7 @@ import {
   MusicObject,
   MusicObjectStatusEnum,
 } from 'processors/database/entities/object.entity';
-import { Like, Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { SearchDto } from './dtos/search.dto';
 import { CustomError } from 'errors/custom.error';
 
@@ -20,9 +20,11 @@ export class ManageService {
     const [object, count] = await this.musicObjectRepository.findAndCount({
       where: objects?.map((item) => ({
         ...item,
-        songName: item?.songName ? Like(`%${item.songName}%`) : undefined,
-        albumName: item?.albumName ? Like(`%${item.albumName}%`) : undefined,
-        artistName: item?.artistName ? Like(`%${item.artistName}%`) : undefined,
+        songName: item?.songName ? ILike(`%${item.songName}%`) : undefined,
+        albumName: item?.albumName ? ILike(`%${item.albumName}%`) : undefined,
+        artistName: item?.artistName
+          ? ILike(`%${item.artistName}%`)
+          : undefined,
       })),
       skip: offset,
       take: limit,

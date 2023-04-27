@@ -1,4 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Permission {
@@ -13,6 +19,22 @@ export class Permission {
     unique: true,
   })
   key: string;
+
+  @Column({ nullable: true })
+  createTime: Date;
+
+  @Column({ nullable: true })
+  updateTime: Date;
+
+  @BeforeInsert()
+  setCreateTime() {
+    this.createTime = new Date();
+  }
+
+  @BeforeUpdate()
+  setUpdateTime() {
+    this.updateTime = new Date();
+  }
 
   @Column()
   extra?: string;

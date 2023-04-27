@@ -66,7 +66,6 @@ const MusicSearch: React.FC = () => {
           ? offlineMusicObjectApi
           : shelvesMusicObjectApi;
       const data = await api({ id });
-      console.log(data);
       if (!data || isEmpty(data)) {
         message.error(
           `${
@@ -230,7 +229,7 @@ const MusicSearch: React.FC = () => {
         !song?.songVal && !album?.albumVal && !artist?.artistVal
           ? undefined
           : objects,
-      offset: current - 1,
+      offset: (current - 1) * pageSize,
       limit: pageSize
     });
     const { list = [], total } = data;
@@ -258,70 +257,78 @@ const MusicSearch: React.FC = () => {
   };
 
   return (
-    <div className="bg-white w-full h-auto rounded p-5">
-      <Title level={5}>{t('MUSIC_RETRIEVAL')}</Title>
-      <Form form={form} layout="inline">
-        <Form.Item>
-          <Input.Group compact>
-            <Form.Item
-              name={['song', 'songType']}
-              rules={[{ required: true, message: 'Please input Song Type!' }]}
-              initialValue={FormEnum.SONGID}
-            >
-              <Select>
-                <Option value={FormEnum.SONGID}>{t('SONG_ID')}</Option>
-                <Option value={FormEnum.SONGNAME}>{t('SONG_NAME')}</Option>
-              </Select>
-            </Form.Item>
-            <Form.Item name={['song', 'songVal']}>
-              <Input placeholder={`${t('PLEASE_INPUT')}...`} />
-            </Form.Item>
-          </Input.Group>
-        </Form.Item>
+    <div className=" w-full h-auto rounded p-5">
+      <Title level={3}>{t('MUSIC_RETRIEVAL')}</Title>
+      <div className="bg-white p-3 min-h-full">
+        <Form form={form} layout="inline">
+          <Form.Item>
+            <Input.Group compact>
+              <Form.Item
+                name={['song', 'songType']}
+                rules={[{ required: true, message: 'Please input Song Type!' }]}
+                initialValue={FormEnum.SONGID}
+              >
+                <Select>
+                  <Option value={FormEnum.SONGID}>{t('SONG_ID')}</Option>
+                  <Option value={FormEnum.SONGNAME}>{t('SONG_NAME')}</Option>
+                </Select>
+              </Form.Item>
+              <Form.Item name={['song', 'songVal']}>
+                <Input placeholder={`${t('PLEASE_INPUT')}...`} />
+              </Form.Item>
+            </Input.Group>
+          </Form.Item>
 
-        <Form.Item>
-          <Input.Group compact>
-            <Form.Item
-              name={['album', 'albumType']}
-              rules={[{ required: true, message: 'Please input Album Type!' }]}
-              initialValue={FormEnum.ALBUMID}
-            >
-              <Select>
-                <Option value={FormEnum.ALBUMID}>{t('ALBUM_ID')}</Option>
-                <Option value={FormEnum.ALBUMNAME}>{t('ALBUM_NAME')}</Option>
-              </Select>
-            </Form.Item>
-            <Form.Item name={['album', 'albumVal']}>
-              <Input placeholder={`${t('PLEASE_INPUT')}...`} />
-            </Form.Item>
-          </Input.Group>
-        </Form.Item>
+          <Form.Item>
+            <Input.Group compact>
+              <Form.Item
+                name={['album', 'albumType']}
+                rules={[
+                  { required: true, message: 'Please input Album Type!' }
+                ]}
+                initialValue={FormEnum.ALBUMID}
+              >
+                <Select>
+                  <Option value={FormEnum.ALBUMID}>{t('ALBUM_ID')}</Option>
+                  <Option value={FormEnum.ALBUMNAME}>{t('ALBUM_NAME')}</Option>
+                </Select>
+              </Form.Item>
+              <Form.Item name={['album', 'albumVal']}>
+                <Input placeholder={`${t('PLEASE_INPUT')}...`} />
+              </Form.Item>
+            </Input.Group>
+          </Form.Item>
 
-        <Form.Item>
-          <Input.Group compact>
-            <Form.Item
-              name={['artist', 'artistType']}
-              rules={[{ required: true, message: 'Please input Artist Type!' }]}
-              initialValue={FormEnum.ARTISTID}
-            >
-              <Select>
-                <Option value={FormEnum.ARTISTID}>{t('ARTIST_ID')}</Option>
-                <Option value={FormEnum.ARTISTNAME}>{t('ARTIST_NAME')}</Option>
-              </Select>
-            </Form.Item>
-            <Form.Item name={['artist', 'artistVal']}>
-              <Input placeholder={`${t('PLEASE_INPUT')}...`} />
-            </Form.Item>
-          </Input.Group>
-        </Form.Item>
+          <Form.Item>
+            <Input.Group compact>
+              <Form.Item
+                name={['artist', 'artistType']}
+                rules={[
+                  { required: true, message: 'Please input Artist Type!' }
+                ]}
+                initialValue={FormEnum.ARTISTID}
+              >
+                <Select>
+                  <Option value={FormEnum.ARTISTID}>{t('ARTIST_ID')}</Option>
+                  <Option value={FormEnum.ARTISTNAME}>
+                    {t('ARTIST_NAME')}
+                  </Option>
+                </Select>
+              </Form.Item>
+              <Form.Item name={['artist', 'artistVal']}>
+                <Input placeholder={`${t('PLEASE_INPUT')}...`} />
+              </Form.Item>
+            </Input.Group>
+          </Form.Item>
 
-        <Form.Item>
-          <Button type="primary" onClick={handleSearch}>
-            {t('SEARCH')}
-          </Button>
-        </Form.Item>
-      </Form>
-      <Table className="mt-5" columns={columns} {...tableProps} />
+          <Form.Item>
+            <Button type="primary" onClick={handleSearch}>
+              {t('SEARCH')}
+            </Button>
+          </Form.Item>
+        </Form>
+        <Table className="mt-5" columns={columns} {...tableProps} />
+      </div>
     </div>
   );
 };

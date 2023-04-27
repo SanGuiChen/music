@@ -1,4 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 export enum MusicObjectStatusEnum {
   IN_USE = 0,
@@ -41,4 +47,20 @@ export class MusicObject {
     comment: '音乐实体状态',
   })
   status: MusicObjectStatusEnum;
+
+  @Column({ nullable: true })
+  createTime: Date;
+
+  @Column({ nullable: true })
+  updateTime: Date;
+
+  @BeforeInsert()
+  setCreateTime() {
+    this.createTime = new Date();
+  }
+
+  @BeforeUpdate()
+  setUpdateTime() {
+    this.updateTime = new Date();
+  }
 }

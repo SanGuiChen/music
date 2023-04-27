@@ -54,7 +54,7 @@ const App: React.FC = () => {
         <Header setLang={setLang} />
         <Layout>
           <LeftSider />
-          <Content className=" overflow-scroll p-5" />
+          <Content className=" overflow-auto p-5" />
         </Layout>
       </Layout>
     </ConfigProvider>

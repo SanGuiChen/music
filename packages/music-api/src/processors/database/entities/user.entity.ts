@@ -1,5 +1,11 @@
 import { Exclude } from 'class-transformer';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 export enum UserStatusEnum {
   BANNED = 0,
@@ -45,4 +51,20 @@ export class User {
     comment: '账号状态',
   })
   status: UserStatusEnum;
+
+  @Column({ nullable: true })
+  createTime: Date;
+
+  @Column({ nullable: true })
+  updateTime: Date;
+
+  @BeforeInsert()
+  setCreateTime() {
+    this.createTime = new Date();
+  }
+
+  @BeforeUpdate()
+  setUpdateTime() {
+    this.updateTime = new Date();
+  }
 }

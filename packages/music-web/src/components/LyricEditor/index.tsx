@@ -5,18 +5,13 @@ import {
   UpSquareOutlined
 } from '@ant-design/icons';
 import { Button, message, Space, Upload } from 'antd';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
-import { BaseEditor, createEditor, Editor, Node, Transforms } from 'slate';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
+import { createEditor, Editor, Node, Transforms } from 'slate';
 import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
 
 interface IProps {
   initialContent?: Node[];
+  initialPlayUrl?: string;
 }
 
 enum KeyBoardCode {
@@ -24,14 +19,13 @@ enum KeyBoardCode {
   ENTER = 13
 }
 
-const LyricEditor: React.FC<IProps> = ({ initialContent }) => {
+const LyricEditor: React.FC<IProps> = ({ initialContent, initialPlayUrl }) => {
   const lyricPlayerRef = useRef<HTMLAudioElement>(null);
-
   const editor = useMemo(() => withReact(createEditor()), []);
+
   // 跟踪编辑器中 value 的值。
   const [content, setContent] = useState<Node[]>(initialContent ?? []);
-
-  const [playUrl, setPlayUrl] = useState<string>('');
+  const [playUrl, setPlayUrl] = useState<string>(initialPlayUrl ?? '');
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isPlay, setIsPlay] = useState<boolean>(false);
   const [fileName, setFileName] = useState<string>('');

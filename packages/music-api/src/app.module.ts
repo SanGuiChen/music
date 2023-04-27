@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from 'processors/database/database.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ManageModule } from 'modules/manage/manage.module';
+import { TaskModule } from 'modules/task/task.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ManageModule } from 'modules/manage/manage.module';
     AuthModule,
     ScriptModule,
     ManageModule,
+    TaskModule,
   ],
   controllers: [],
   providers: [],

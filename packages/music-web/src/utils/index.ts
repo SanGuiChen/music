@@ -21,3 +21,31 @@ export const isLogin = async () => {
   }
   return {} as User;
 };
+
+// formatDate(dateString, "yyyy-MM-dd HH:mm:ss");
+export function formatDate(dateString: string, format: string): string {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1; // 注意月份从0开始，所以需要加1
+  const day = date.getDate();
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+  const second = date.getSeconds();
+
+  // 定义格式化规则
+  const rules: { [key: string]: any } = {
+    yyyy: year,
+    MM: month < 10 ? '0' + month : month,
+    dd: day < 10 ? '0' + day : day,
+    HH: hour < 10 ? '0' + hour : hour,
+    mm: minute < 10 ? '0' + minute : minute,
+    ss: second < 10 ? '0' + second : second
+  };
+
+  // 替换格式化规则
+  const result = format.replace(/(yyyy|MM|dd|HH|mm|ss)/g, (match) => {
+    return rules[match];
+  });
+
+  return result;
+}

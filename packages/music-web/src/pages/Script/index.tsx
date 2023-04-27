@@ -140,7 +140,7 @@ const Script: React.FC = () => {
     }
     const { data } = await searchApi({
       keyWords: keywords.split(' '),
-      offset: current - 1,
+      offset: (current - 1) * pageSize,
       limit: pageSize
     });
     const { list, total } = data;
@@ -191,38 +191,40 @@ const Script: React.FC = () => {
   };
 
   return (
-    <div className="bg-white w-full h-full rounded p-5">
-      <Title level={5}>{t('KEYWORDS_SEARCH')}</Title>
-      <Form form={form} layout="inline">
-        <Form.Item name="keywords" className="w-full">
-          <Search
-            placeholder={`${t('CAN_SEARCH_SONG_ALBUM_ARTIST_ETC')} ${t(
-              'SPACE_DIFF'
-            )}`}
-            onSearch={handleSearch}
-            allowClear
-          />
-        </Form.Item>
-      </Form>
+    <div className="w-full h-full rounded p-5">
+      <Title level={3}>{t('KEYWORDS_SEARCH')}</Title>
+      <div className="bg-white p-3 min-h-full">
+        <Form form={form} layout="inline">
+          <Form.Item name="keywords" className="w-full">
+            <Search
+              placeholder={`${t('CAN_SEARCH_SONG_ALBUM_ARTIST_ETC')} ${t(
+                'SPACE_DIFF'
+              )}`}
+              onSearch={handleSearch}
+              allowClear
+            />
+          </Form.Item>
+        </Form>
 
-      <Button
-        className="mt-5"
-        type="primary"
-        onClick={handleStorage}
-        loading={storaging}
-        disabled={!selectedRowKeys.length}
-      >
-        {t('STORAGE')}
-        {selectedRowKeys.length
-          ? `${selectedRowKeys.length}${t('SOME_SONGS')}`
-          : ''}
-      </Button>
-      <Table
-        className="mt-5"
-        columns={columns}
-        {...tableProps}
-        rowSelection={{ selectedRowKeys, onChange: onSelectChange }}
-      />
+        <Button
+          className="mt-5"
+          type="primary"
+          onClick={handleStorage}
+          loading={storaging}
+          disabled={!selectedRowKeys.length}
+        >
+          {t('STORAGE')}
+          {selectedRowKeys.length
+            ? `${selectedRowKeys.length}${t('SOME_SONGS')}`
+            : ''}
+        </Button>
+        <Table
+          className="mt-5"
+          columns={columns}
+          {...tableProps}
+          rowSelection={{ selectedRowKeys, onChange: onSelectChange }}
+        />
+      </div>
     </div>
   );
 };
