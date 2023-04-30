@@ -6,6 +6,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ManageModule } from 'modules/manage/manage.module';
 import { TaskModule } from 'modules/task/task.module';
 import { ReviewModule } from 'modules/review/review.module';
+import { UserModule } from 'modules/user/user.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { ReviewModule } from 'modules/review/review.module';
       envFilePath: ['.dev.env'],
     }),
     DatabaseModule,
+    UserModule,
     AuthModule,
     ScriptModule,
     ManageModule,

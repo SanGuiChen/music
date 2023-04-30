@@ -1,4 +1,4 @@
-import { Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { SearchUserDto } from './dtos/search.dto';
 import { UserService } from './user.service';
 
@@ -7,7 +7,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('search')
-  async search(params: SearchUserDto) {
+  async search(@Body() params: SearchUserDto) {
     return this.userService.searchUser(params);
   }
 }
