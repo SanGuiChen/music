@@ -13,6 +13,8 @@ import { LeftOutlined } from '@ant-design/icons';
 
 interface IBasicTaskInfo {
   pendingTask: number;
+  pendingReviewTask: number;
+  rejectedTask: number;
   reward: number;
   finishedTask: number;
 }
@@ -23,6 +25,8 @@ const PersonalTask = () => {
 
   const [taskInfo, setTaskInfo] = useState<IBasicTaskInfo>({
     pendingTask: 0,
+    pendingReviewTask: 0,
+    rejectedTask: 0,
     reward: 0,
     finishedTask: 0
   });
@@ -91,7 +95,7 @@ const PersonalTask = () => {
           block
           disabled={status !== TaskStatusEnum.PENDING}
           onClick={() => {
-            navigate(`/production/${id}`);
+            navigate(`/production/task/${id}`);
           }}
         >
           制作
@@ -120,16 +124,32 @@ const PersonalTask = () => {
       limit: pageSize
     });
     const { task, total } = data;
-    let [pendingTask, finishedTask, totalReward] = [0, 0, 0];
+    let [
+      pendingTask,
+      finishedTask,
+      totalReward,
+      pendingReviewTask,
+      rejectedTask
+    ] = [0, 0, 0, 0, 0];
     task.forEach(({ status, reward }) => {
       if (status === TaskStatusEnum.PENDING) {
         pendingTask += 1;
       } else if (status === TaskStatusEnum.FINISHED) {
         finishedTask += 1;
         totalReward += reward;
+      } else if (status === TaskStatusEnum.CHECK_PENDING) {
+        pendingReviewTask += 1;
+      } else if (status === TaskStatusEnum.CHECK_REJECT) {
+        rejectedTask += 1;
       }
     });
-    setTaskInfo({ pendingTask, finishedTask, reward: totalReward });
+    setTaskInfo({
+      pendingTask,
+      finishedTask,
+      reward: totalReward,
+      pendingReviewTask,
+      rejectedTask
+    });
 
     return {
       list: task.map((item) => ({ key: item.id, ...item })),
@@ -161,18 +181,28 @@ const PersonalTask = () => {
               color: 'text-yellow-500'
             },
             {
+              label: '待审核任务',
+              value: taskInfo.pendingReviewTask,
+              color: 'text-purple-500'
+            },
+            {
+              label: '被驳回任务',
+              value: taskInfo.rejectedTask,
+              color: 'text-red-500'
+            },
+            {
               label: '已完成任务',
               value: taskInfo.finishedTask,
               color: 'text-blue-500'
             },
             {
               label: '已获得酬劳',
-              value: taskInfo.reward,
+              value: `${taskInfo.reward}元`,
               color: 'text-green-500'
             }
           ].map(({ label, value, color }, index) => (
             <div
-              className="w-1/3 h-55px border rounded text-center"
+              className="w-1/5 h-55px border rounded text-center"
               key={index}
             >
               <p className=" text-2xl font-bold">{label}</p>

@@ -1,5 +1,4 @@
-import { getPlayUrlApi, searchApi, storageApi } from '@/apis/script';
-import { IStorageParams } from '@/apis/script/index.interface';
+import { getPlayUrlApi, searchApi } from '@/apis/script';
 import { uniqueIdGenerator } from '@/utils';
 import { useAntdTable, useRequest } from 'ahooks';
 import { Input, Image, Typography, Button, message, Form } from 'antd';
@@ -11,6 +10,8 @@ import { clampedAll } from 'clamped-promise-all';
 import { CONCURRENT_LIMIT } from '@/constants';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'antd/es/form/Form';
+import { IStorageParams } from '@/apis/meta/index.interface';
+import { storageApi } from '@/apis/meta';
 
 const { Text } = Typography;
 const { Search } = Input;

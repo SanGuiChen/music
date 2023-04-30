@@ -21,10 +21,19 @@ const ProductionRoutes: IRoute[] = [
     }
   },
   {
-    pathname: '/production/:taskId',
-    name: 'Production',
+    pathname: '/production/task/:taskId',
+    name: 'Production_Task',
     title: '任务制作',
-    component: ReactLazilyComponent(() => import('@/pages/Production')),
+    component: ReactLazilyComponent(() => import('@/pages/Production/task')),
+    meta: {
+      requireAuth: true
+    }
+  },
+  {
+    pathname: '/production/review/:reviewId',
+    name: 'Production_Review',
+    title: '任务审核',
+    component: ReactLazilyComponent(() => import('@/pages/Production/review')),
     meta: {
       requireAuth: true
     }

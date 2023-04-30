@@ -7,6 +7,7 @@ import {
 import { ILike, Repository } from 'typeorm';
 import { SearchDto } from './dtos/search.dto';
 import { CustomError } from 'errors/custom.error';
+import { StorageDto } from './dtos/storage.dto';
 
 @Injectable()
 export class ManageService {
@@ -54,6 +55,35 @@ export class ManageService {
       );
     } catch (e) {
       throw new CustomError('Song shelves failed');
+    }
+  }
+
+  // 可以完善
+  async isStoraged(songId: string, albumId: string, artistId: string) {
+    return await this.musicObjectRepository.findOneBy({
+      songId,
+      albumId,
+      artistId,
+    });
+  }
+
+  async storage(song: StorageDto) {
+    const songId = `${song.songId}`;
+    const albumId = `${song.albumId}`;
+    const artistId = `${song.artistId}`;
+    const object = await this.isStoraged(songId, albumId, artistId);
+    if (!object) {
+      const musicObject = this.musicObjectRepository.create({
+        ...song,
+        songId,
+        albumId,
+        artistId,
+      });
+      try {
+        return await this.musicObjectRepository.save(musicObject);
+      } catch (e) {
+        throw new CustomError('Song storage failed');
+      }
     }
   }
 }

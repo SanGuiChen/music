@@ -5,6 +5,7 @@ import { DatabaseModule } from 'processors/database/database.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ManageModule } from 'modules/manage/manage.module';
 import { TaskModule } from 'modules/task/task.module';
+import { ReviewModule } from 'modules/review/review.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { TaskModule } from 'modules/task/task.module';
     ScriptModule,
     ManageModule,
     TaskModule,
+    ReviewModule,
   ],
   controllers: [],
   providers: [],

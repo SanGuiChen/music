@@ -1,10 +1,11 @@
-import { StorageDto } from './dtos/storage.dto';
+import { StorageDto } from '../manage/dtos/storage.dto';
 import { PlayDto } from './dtos/play.dto';
 import { Body, Controller, Post } from '@nestjs/common';
 import { isEmpty } from 'lodash';
 import { map } from 'rxjs';
 import { SearchDto } from './dtos/search.dto';
 import { ScriptService } from './script.service';
+import { ManageService } from 'modules/manage/manage.service';
 
 @Controller('script')
 export class ScriptController {
@@ -46,10 +47,5 @@ export class ScriptController {
         return playMap;
       }),
     );
-  }
-
-  @Post('storage')
-  async storage(@Body() storageDto: StorageDto) {
-    return this.scriptService.storage(storageDto);
   }
 }

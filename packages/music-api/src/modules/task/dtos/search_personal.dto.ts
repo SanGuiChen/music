@@ -2,8 +2,12 @@ import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class SearchPersonalTaskDto {
   @IsString()
-  @IsNotEmpty({ message: 'userId is empty' })
-  userId: string;
+  @IsOptional()
+  userId?: string;
+
+  @IsString()
+  @IsOptional()
+  taskId?: string;
 
   @IsNumber()
   @IsNotEmpty({ message: 'offset is empty' })

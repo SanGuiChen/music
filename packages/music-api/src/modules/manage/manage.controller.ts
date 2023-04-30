@@ -3,6 +3,7 @@ import { OfflineDto } from './dtos/offline.dto';
 import { Body, Controller, Post } from '@nestjs/common';
 import { SearchDto } from './dtos/search.dto';
 import { ManageService } from './manage.service';
+import { StorageDto } from './dtos/storage.dto';
 
 @Controller('manage')
 export class ManageController {
@@ -18,6 +19,11 @@ export class ManageController {
   async shelves(@Body() shelvesDto: ShelvesDto) {
     const { id } = shelvesDto;
     return await this.manageService.shelves(id);
+  }
+
+  @Post('storage')
+  async storage(@Body() storageDto: StorageDto) {
+    return this.manageService.storage(storageDto);
   }
 
   @Post('search')

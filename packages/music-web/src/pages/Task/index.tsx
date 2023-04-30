@@ -6,7 +6,6 @@ import { Button, DatePicker, Form, Input, InputNumber, Select } from 'antd';
 import CreateModal, { getTaskTypeEnumText } from './createModal';
 import { useState } from 'react';
 import {
-  ICreateTaskParams,
   ISearchTaskParams,
   ITask,
   TaskStatusEnum,
@@ -90,7 +89,9 @@ const Task: React.FC = () => {
             {[
               TaskStatusEnum.NOT_START,
               TaskStatusEnum.PENDING,
-              TaskStatusEnum.FINISHED
+              TaskStatusEnum.FINISHED,
+              TaskStatusEnum.CHECK_REJECT,
+              TaskStatusEnum.CHECK_PENDING
             ].map((val, index) => (
               <Select.Option value={val} key={index}>
                 {getTaskStatusEnumText(val)}

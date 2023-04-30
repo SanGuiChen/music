@@ -6,19 +6,33 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+export enum ReviewStatusEnum {
+  NOT_START = 0,
+  NOT_PASS = 1,
+  PASS = 2,
+}
+
 @Entity()
-export class Permission {
+export class Review {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('string')
-  title: string;
+  @Column({ comment: '审核人Id' })
+  reviewerId: string;
+
+  @Column({ comment: '接单人Id' })
+  employeeId: string;
+
+  @Column({ comment: '任务Id' })
+  taskId: string;
 
   @Column({
-    type: 'string',
-    unique: true,
+    type: 'enum',
+    enum: ReviewStatusEnum,
+    default: ReviewStatusEnum.NOT_START,
+    comment: '审核状态',
   })
-  key: string;
+  status: ReviewStatusEnum;
 
   @Column({ nullable: true })
   createTime: Date;
@@ -36,6 +50,6 @@ export class Permission {
     this.updateTime = new Date();
   }
 
-  @Column()
+  @Column({ nullable: true })
   extra?: string;
 }

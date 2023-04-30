@@ -5,6 +5,7 @@ import { ScriptController } from './script.controller';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ManageModule } from 'modules/manage/manage.module';
 
 @Module({
   imports: [
@@ -12,7 +13,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     HttpModule.register({
       timeout: 5000,
     }),
-    TypeOrmModule.forFeature([MusicObject]),
   ],
   providers: [ScriptService],
   controllers: [ScriptController],

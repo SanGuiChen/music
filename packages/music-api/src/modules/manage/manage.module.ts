@@ -7,6 +7,7 @@ import { MusicObject } from 'processors/database/entities/object.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([MusicObject])],
   providers: [ManageService],
+  exports: [ManageService],
   controllers: [ManageController],
 })
 export class ManageModule {}

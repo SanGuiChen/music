@@ -29,14 +29,3 @@ export interface IPlayUrlParams {
 }
 
 export type IPlayUrlResponse = Record<string, string>;
-
-export interface IStorageParams {
-  songId: number;
-  songName: string;
-  artistId: string;
-  artistName: string;
-  albumId: number;
-  albumName: string;
-  imgUrl: string;
-  playUrl: string;
-}

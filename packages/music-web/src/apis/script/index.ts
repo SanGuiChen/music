@@ -3,8 +3,7 @@ import {
   IPlayUrlParams,
   IPlayUrlResponse,
   ISearchParams,
-  ISearchResponse,
-  IStorageParams
+  ISearchResponse
 } from './index.interface';
 
 export const searchApi = async (
@@ -17,10 +16,4 @@ export const getPlayUrlApi = async (
   params: IPlayUrlParams
 ): Promise<IResponse<IPlayUrlResponse>> => {
   return axiosInstance.post('script/play/url', params).then((res) => res.data);
-};
-
-export const storageApi = async (
-  params: IStorageParams
-): Promise<IResponse<any>> => {
-  return axiosInstance.post('script/storage', params).then((res) => res.data);
 };

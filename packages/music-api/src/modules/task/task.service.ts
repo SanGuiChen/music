@@ -55,11 +55,12 @@ export class TaskService {
   }
 
   async searchPersonalTask(params: SearchPersonalTaskDto) {
-    const { offset, limit, userId } = params;
+    const { offset, limit, userId, taskId } = params;
     try {
       const personalTasks = await this.taskUserMapRepository.find({
         where: {
           userId,
+          taskId,
         },
       });
       const taskIds = personalTasks.map((task) => task.taskId);
@@ -103,6 +104,39 @@ export class TaskService {
       return user_task;
     } catch (e) {
       throw new CustomError('Task User Map Create Failed');
+    }
+  }
+
+  async finishTask(taskId: string) {
+    try {
+      return await this.taskRepository.update(
+        { id: taskId },
+        { status: TaskStatusEnum.FINISHED },
+      );
+    } catch (e) {
+      throw new CustomError('Task Status Update Failed');
+    }
+  }
+
+  async backToTask(taskId: string) {
+    try {
+      return await this.taskRepository.update(
+        { id: taskId },
+        { status: TaskStatusEnum.CHECK_REJECT },
+      );
+    } catch (e) {
+      throw new CustomError('Task Status Update Failed');
+    }
+  }
+
+  async pendingReviewTask(taskId: string) {
+    try {
+      return await this.taskRepository.update(
+        { id: taskId },
+        { status: TaskStatusEnum.CHECK_PENDING },
+      );
+    } catch (e) {
+      throw new CustomError('Task Status Update Failed');
     }
   }
 }

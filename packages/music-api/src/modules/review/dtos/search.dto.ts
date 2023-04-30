@@ -6,37 +6,29 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import {
-  TaskStatusEnum,
-  TaskTypeEnum,
-} from 'processors/database/entities/task.entity';
+import { ReviewStatusEnum } from 'processors/database/entities/review.entity';
 
-export class SearchDto {
-  @IsString()
-  @IsOptional()
-  name?: string;
-
+export class SearchReviewDto {
   @IsString()
   @IsOptional()
   id?: string;
 
-  @IsArray()
-  @ArrayUnique()
+  @IsString()
   @IsOptional()
-  type?: TaskTypeEnum[];
+  reviewerId?: string;
+
+  @IsString()
+  @IsOptional()
+  employeeId?: string;
+
+  @IsString()
+  @IsOptional()
+  taskId?: string;
 
   @IsArray()
   @ArrayUnique()
   @IsOptional()
-  status?: TaskStatusEnum[];
-
-  @IsNumber()
-  @IsOptional()
-  timeLimit?: number;
-
-  @IsNumber()
-  @IsOptional()
-  reward?: number;
+  status?: ReviewStatusEnum[];
 
   @IsString()
   @IsOptional()

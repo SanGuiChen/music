@@ -1,4 +1,4 @@
-import { RoleEnum } from './../../store/user';
+import { RoleEnum, UserStatusEnum } from './../../store/user';
 export interface ILogin {
   email: string;
   password: string;
@@ -18,4 +18,12 @@ export interface IUpdate {
   email?: string;
   passWord?: string;
   role?: RoleEnum;
+}
+
+export interface ISearchUserParams {
+  id?: string;
+  nickname?: string;
+  email?: string;
+  role?: RoleEnum;
+  status?: UserStatusEnum;
 }

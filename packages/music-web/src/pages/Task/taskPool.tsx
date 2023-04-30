@@ -26,6 +26,10 @@ export const getTaskStatusEnumText = (status: TaskStatusEnum) => {
       return '待领取';
     case TaskStatusEnum.PENDING:
       return '进行中';
+    case TaskStatusEnum.CHECK_PENDING:
+      return '待审核';
+    case TaskStatusEnum.CHECK_REJECT:
+      return '审核驳回';
     case TaskStatusEnum.FINISHED:
       return '已完成';
     default:
@@ -39,6 +43,10 @@ const getTaskStatusEnumColor = (status: TaskStatusEnum) => {
       return 'green';
     case TaskStatusEnum.PENDING:
       return 'cyan';
+    case TaskStatusEnum.CHECK_PENDING:
+      return 'blue';
+    case TaskStatusEnum.CHECK_REJECT:
+      return 'red';
     case TaskStatusEnum.FINISHED:
       return 'purple';
     default:
@@ -47,7 +55,6 @@ const getTaskStatusEnumColor = (status: TaskStatusEnum) => {
 };
 
 // Todo: 权限区分
-
 const { Text } = Typography;
 
 const TaskPool: React.FC<IProps> = ({ cards, loading, refresh }) => {

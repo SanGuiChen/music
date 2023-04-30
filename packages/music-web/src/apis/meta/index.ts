@@ -3,7 +3,8 @@ import {
   IMusicObject,
   IMusicOfflineParams,
   IMusicSearchResp,
-  ISearchObjectParams
+  ISearchObjectParams,
+  IStorageParams
 } from './index.interface';
 
 export const searchMusicObjectApi = async (
@@ -22,4 +23,10 @@ export const shelvesMusicObjectApi = async (
   params: IMusicOfflineParams
 ): Promise<IResponse<IMusicObject>> => {
   return axiosInstance.post('manage/shelves', params).then((res) => res.data);
+};
+
+export const storageApi = async (
+  params: IStorageParams
+): Promise<IResponse<any>> => {
+  return axiosInstance.post('manage/storage', params).then((res) => res.data);
 };

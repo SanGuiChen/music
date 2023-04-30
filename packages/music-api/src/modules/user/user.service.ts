@@ -7,6 +7,7 @@ import { FindOptionsWhere, Repository } from 'typeorm';
 import { User } from 'processors/database/entities/user.entity';
 import { decodeMD5 } from 'transformers/codec.transformer';
 import { omit } from 'lodash';
+import { SearchUserDto } from './dtos/search.dto';
 
 @Injectable()
 export class UserService {
@@ -19,6 +20,19 @@ export class UserService {
       return this.userRepository.findOneBy(findData);
     } catch (e) {
       throw new CustomError('ERROR Incorrect username or password');
+    }
+  }
+
+  async searchUser(params: SearchUserDto) {
+    try {
+      return this.userRepository.find({
+        order: { createTime: 'DESC' },
+        where: {
+          ...params,
+        },
+      });
+    } catch (e) {
+      throw new CustomError('ERROR can not find user');
     }
   }
 

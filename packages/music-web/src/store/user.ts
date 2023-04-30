@@ -25,7 +25,7 @@ export const RoleEnumTextMap = (type: RoleEnum) => {
   }
 };
 
-export interface User {
+export interface IUser {
   id: string;
   nickname: string;
   email: string;
@@ -35,11 +35,11 @@ export interface User {
 }
 
 interface IUserStore {
-  user: User;
-  setUser: (user: User) => void;
+  user: IUser;
+  setUser: (user: IUser) => void;
 }
 
 export const useUserStore = create<IUserStore>((set) => ({
-  user: {} as User,
-  setUser: (user: User) => set(() => ({ user }))
+  user: {} as IUser,
+  setUser: (user: IUser) => set(() => ({ user }))
 }));

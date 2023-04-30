@@ -25,7 +25,6 @@ import { useForm } from 'antd/es/form/Form';
 import { ColumnsType } from 'antd/es/table';
 import Title from 'antd/es/typography/Title';
 import { isEmpty, isUndefined } from 'lodash';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const { Option } = Select;

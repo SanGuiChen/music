@@ -7,7 +7,9 @@ export enum TaskTypeEnum {
 export enum TaskStatusEnum {
   NOT_START = 1,
   PENDING = 2,
-  FINISHED = 3
+  CHECK_PENDING = 3,
+  CHECK_REJECT = 4,
+  FINISHED = 5
 }
 
 export interface ISearchTaskParams {
@@ -24,7 +26,8 @@ export interface ISearchTaskParams {
 }
 
 export interface ISearchPersonalTaskParams {
-  userId: string;
+  userId?: string;
+  taskId?: string;
   offset: number;
   limit: number;
 }

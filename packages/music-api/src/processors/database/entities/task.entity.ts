@@ -15,7 +15,9 @@ export enum TaskTypeEnum {
 export enum TaskStatusEnum {
   NOT_START = 1,
   PENDING = 2,
-  FINISHED = 3,
+  CHECK_PENDING = 3,
+  CHECK_REJECT = 4,
+  FINISHED = 5,
 }
 
 @Entity()

@@ -8,6 +8,7 @@ import { Task_User_Mapping } from 'processors/database/entities/task_user_mappin
 @Module({
   imports: [TypeOrmModule.forFeature([Task, Task_User_Mapping])],
   providers: [TaskService],
+  exports: [TaskService],
   controllers: [TaskController],
 })
 export class TaskModule {}

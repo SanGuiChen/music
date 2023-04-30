@@ -39,3 +39,14 @@ export interface IMusicSearchResp {
 export interface IMusicOfflineParams {
   id: string;
 }
+
+export interface IStorageParams {
+  songId: number;
+  songName: string;
+  artistId: string;
+  artistName: string;
+  albumId: number;
+  albumName: string;
+  imgUrl: string;
+  playUrl: string;
+}
