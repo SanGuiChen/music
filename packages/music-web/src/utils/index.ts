@@ -1,6 +1,6 @@
 import { getUserInfoApi } from '@/apis/user/user';
 import { MUSIC_TOKEN } from '@/constants';
-import { User } from '@/store/user';
+import { IUser } from '@/store/user';
 import { isString, isEmpty } from 'lodash';
 
 export function* uniqueIdGenerator(prefix: string): Generator<string> {
@@ -19,7 +19,7 @@ export const isLogin = async () => {
       return data;
     }
   }
-  return {} as User;
+  return {} as IUser;
 };
 
 // formatDate(dateString, "yyyy-MM-dd HH:mm:ss");

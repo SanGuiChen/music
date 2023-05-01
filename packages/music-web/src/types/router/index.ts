@@ -3,6 +3,7 @@ import { FC } from 'react';
 interface MetaProps {
   navigation?: string;
   requireAuth?: boolean;
+  onlyAdmin?: boolean;
 }
 
 export interface IRoute {

@@ -4,10 +4,10 @@ import { IRoute } from '@/types/router';
 import routes from './routes';
 import { isLogin } from '@/utils';
 import notFoundIcon from '@/assets/404.svg';
-import { Spin } from 'antd';
+import { Spin, message } from 'antd';
 import { useRequest } from 'ahooks';
 import { isEmpty } from 'lodash';
-import { useUserStore } from '@/store/user';
+import { IUser, RoleEnum, useUserStore } from '@/store/user';
 
 const ErrorBlock = () => {
   return (
@@ -26,30 +26,28 @@ const ErrorBlock = () => {
 const RouteDecorator = (props: { route: IRoute }) => {
   const { route } = props;
   const navigate = useNavigate();
-  const setUser = useUserStore((state) => state.setUser);
-
-  const { data: loginVisible } = useRequest(async () => {
-    const user = await isLogin();
-    if (!isEmpty(user)) {
-      setUser(user);
-      return false;
-    }
-    return true;
-  });
+  const user = useUserStore((state) => state.user);
 
   useEffect(() => {
     document.title = `Music-${route.title}`;
+
     // 鉴权路由守卫
-    // if (route.meta?.requireAuth) {
-    //   if (loginVisible) {
-    //     navigate('/', { state: { redirect: route.pathname } });
-    //   }
-    // }
+    if (route.meta?.requireAuth) {
+      if (isEmpty(user)) {
+        navigate('/', { state: { redirect: route.pathname } });
+      }
+    }
+    if (route.meta?.onlyAdmin) {
+      if (user?.role !== RoleEnum.SUPER_ADMIN) {
+        message.warning('该页面需要管理员权限');
+        navigate('/', { state: { redirect: route.pathname } });
+      }
+    }
 
     // 自定义路由守卫
     route.beforeCreate && route.beforeCreate(route);
     return () => route.beforeDestroy && route.beforeDestroy(route);
-  }, [route]);
+  }, [route, user]);
 
   return <route.component />;
 };

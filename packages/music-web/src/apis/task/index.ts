@@ -28,6 +28,10 @@ export const createTaskApi = async (
   return axiosInstance.post('task/create', params).then((res) => res.data);
 };
 
+export const deleteTaskApi = async (id: string): Promise<IResponse<ITask>> => {
+  return axiosInstance.post('task/delete', { id }).then((res) => res.data);
+};
+
 export const claimTaskApi = async (
   params: IClaimTaskParams
 ): Promise<IResponse<any>> => {

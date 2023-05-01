@@ -10,6 +10,7 @@ import { ClaimDto } from './dtos/claim.dto';
 import { TaskStatusEnum } from 'processors/database/entities/task.entity';
 import { isEmpty } from 'lodash';
 import { SearchPersonalTaskDto } from './dtos/search_personal.dto';
+import { DeleteTaskDto } from './dtos/delete.dto';
 
 // Todo：更新和编辑 需要和权限一起
 @Injectable()
@@ -88,6 +89,16 @@ export class TaskService {
       return await this.taskRepository.save(task);
     } catch (e) {
       throw new CustomError('Task Create Failed');
+    }
+  }
+
+  async deleteTask(params: DeleteTaskDto) {
+    const { id } = params;
+    try {
+      const task = await this.taskRepository.findOne({ where: { id } });
+      return await this.taskRepository.remove(task);
+    } catch (e) {
+      throw new CustomError('Task Delete Failed');
     }
   }
 

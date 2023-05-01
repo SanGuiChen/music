@@ -9,11 +9,11 @@ import {
   Tooltip,
   Typography
 } from 'antd';
-import { EditOutlined, GithubFilled } from '@ant-design/icons';
+import { EditOutlined, GithubFilled, LogoutOutlined } from '@ant-design/icons';
 import { uniqueIdGenerator } from '@/utils';
 import { useTranslation } from 'react-i18next';
 import { LangEnum } from '@/locales/config';
-import { LANG } from '@/constants';
+import { LANG, MUSIC_TOKEN } from '@/constants';
 import { Locale } from 'antd/es/locale';
 import zhCN from 'antd/locale/zh_CN';
 import enUS from 'antd/locale/en_US';
@@ -65,13 +65,25 @@ const Index: React.FC<IProps> = ({ setLang }) => {
     {
       key: menuGenerateId.next().value,
       label: (
-        <div
-          className="flex justify-center"
-          onClick={() => {
-            setEditModalVisible(true);
-          }}
-        >
-          <Button icon={<EditOutlined />}>编辑</Button>
+        <div className="flex justify-center">
+          <Button
+            icon={<EditOutlined />}
+            className="mr-2"
+            onClick={() => {
+              setEditModalVisible(true);
+            }}
+          >
+            编辑
+          </Button>
+          <Button
+            icon={<LogoutOutlined />}
+            onClick={() => {
+              localStorage.removeItem(MUSIC_TOKEN);
+              location.reload();
+            }}
+          >
+            退出
+          </Button>
         </div>
       )
     }

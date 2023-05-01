@@ -35,7 +35,8 @@ const ProductionRoutes: IRoute[] = [
     title: '任务审核',
     component: ReactLazilyComponent(() => import('@/pages/Production/review')),
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      onlyAdmin: true
     }
   },
   {
@@ -62,7 +63,8 @@ const ProductionRoutes: IRoute[] = [
     title: '音乐审核',
     component: ReactLazilyComponent(() => import('@/pages/Review')),
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      onlyAdmin: true
     }
   }
 ];

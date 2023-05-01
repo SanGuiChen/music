@@ -4,6 +4,7 @@ import { SearchDto } from './dtos/search.dto';
 import { CreateDto } from './dtos/create.dto';
 import { ClaimDto } from './dtos/claim.dto';
 import { SearchPersonalTaskDto } from './dtos/search_personal.dto';
+import { DeleteTaskDto } from './dtos/delete.dto';
 
 @Controller('task')
 export class TaskController {
@@ -22,6 +23,11 @@ export class TaskController {
   @Post('create')
   async createTask(@Body() createDto: CreateDto) {
     return this.taskService.createTask(createDto);
+  }
+
+  @Post('delete')
+  async deleteTask(@Body() deleteDto: DeleteTaskDto) {
+    return this.taskService.deleteTask(deleteDto);
   }
 
   @Post('claim')

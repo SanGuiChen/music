@@ -14,7 +14,7 @@ import {
 import { useForm } from 'antd/es/form/Form';
 import { isNil, pickBy } from 'lodash';
 import { useNavigate } from 'react-router-dom';
-import { useUserStore } from '@/store/user';
+import { RoleEnum, useUserStore } from '@/store/user';
 
 const Task: React.FC = () => {
   const user = useUserStore((state) => state.user);
@@ -53,6 +53,7 @@ const Task: React.FC = () => {
             onClick={() => {
               setCreateVisible(true);
             }}
+            disabled={user.role !== RoleEnum.SUPER_ADMIN}
           >
             创建任务
           </Button>

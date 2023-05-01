@@ -5,14 +5,16 @@ import {
   Descriptions,
   Space,
   Tag,
+  Tooltip,
   Typography,
   message
 } from 'antd';
 import { getTaskTypeEnumText } from './createModal';
 import { formatDate } from '@/utils';
-import { claimTaskApi } from '@/apis/task';
+import { claimTaskApi, deleteTaskApi } from '@/apis/task';
 import { useUserStore } from '@/store/user';
 import { isEmpty } from 'lodash';
+import { DeleteOutlined } from '@ant-design/icons';
 
 interface IProps {
   cards: ITask[];
@@ -71,10 +73,23 @@ const TaskPool: React.FC<IProps> = ({ cards, loading, refresh }) => {
     }
   };
 
+  const handleDeleteTask = async (taskId: string) => {
+    const { data } = await deleteTaskApi(taskId);
+    if (!isEmpty(data)) {
+      message.success('删除成功');
+      await refresh();
+    } else {
+      message.error('删除失败，请重试');
+    }
+  };
+
   return (
     <Space wrap>
       {cards.map(
-        ({ id, name, reward, status, timeLimit, type, createTime }, index) => (
+        (
+          { id, name, reward, status, timeLimit, type, createTime, creatorId },
+          index
+        ) => (
           <Card
             hoverable
             title={
@@ -83,9 +98,21 @@ const TaskPool: React.FC<IProps> = ({ cards, loading, refresh }) => {
               </Text>
             }
             extra={
-              <Tag color={getTaskStatusEnumColor(status)}>
-                {getTaskStatusEnumText(status)}
-              </Tag>
+              <>
+                <Tag color={getTaskStatusEnumColor(status)}>
+                  {getTaskStatusEnumText(status)}
+                </Tag>
+                {/* 其实这里的删除应该在后端也做个校验删除人逻辑的 */}
+                {creatorId === user.id && (
+                  <Tooltip title="删除该任务">
+                    <DeleteOutlined
+                      onClick={() => {
+                        handleDeleteTask(id);
+                      }}
+                    />
+                  </Tooltip>
+                )}
+              </>
             }
             style={{ width: 250 }}
             key={index}
