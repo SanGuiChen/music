@@ -258,7 +258,7 @@ const MusicSearch: React.FC = () => {
   return (
     <div className=" w-full h-auto rounded p-5">
       <Title level={3}>{t('MUSIC_RETRIEVAL')}</Title>
-      <div className="bg-white p-3 min-h-full">
+      <div className="bg-white p-3 min-h-full overflow-auto">
         <Form form={form} layout="inline">
           <Form.Item>
             <Input.Group compact>

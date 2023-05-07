@@ -20,7 +20,8 @@ import enUS from 'antd/locale/en_US';
 import { useNavigate } from 'react-router-dom';
 import { RoleEnumTextMap, useUserStore } from '@/store/user';
 import EditUserModal from '@/pages/User';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
+import TopSider from '../TopSider';
 
 interface IProps {
   setLang: React.Dispatch<React.SetStateAction<Locale>>;
@@ -102,17 +103,24 @@ const Index: React.FC<IProps> = ({ setLang }) => {
   };
 
   return (
-    <div className="w-full h-55 px-3 bg-white border-b-1 border-gray-300 flex items-center justify-between shadow-xl z-10">
-      <div
-        onClick={() => {
-          navigate('/');
-        }}
-        className="cursor-pointer"
-      >
-        <img src={MusicSvg} alt="" className="w-12 inline-block" />
-        &nbsp;
-        <span className="text-gray-900 text-2xl font-mono italic">Music</span>
+    <div className="w-full h-55 px-3 bg-white border-b-1 border-gray-50 flex items-center justify-between shadow-xl z-10">
+      <div className="cursor-pointer flex items-center">
+        <div
+          onClick={() => {
+            navigate('/');
+          }}
+          className="mr-2 flex"
+        >
+          <img src={MusicSvg} alt="" className="w-12 inline-block" />
+          &nbsp;
+          <span className="text-gray-900 text-2xl mt-4 font-mono italic block">
+            Music
+          </span>
+        </div>
+
+        <TopSider className="w-200px h-full" />
       </div>
+
       <Space size="small">
         <Tooltip
           placement="bottom"

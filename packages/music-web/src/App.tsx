@@ -6,7 +6,6 @@ import zhCN from 'antd/locale/zh_CN';
 import enUS from 'antd/locale/en_US';
 import Content from './containers/Content';
 import Header from './containers/Header';
-import LeftSider from './containers/LeftSider';
 import { Locale } from 'antd/es/locale-provider';
 import { LangEnum } from './locales/config';
 import { LANG } from './constants';
@@ -53,8 +52,7 @@ const App: React.FC = () => {
         {isEmpty(user) && <Login />}
         <Header setLang={setLang} />
         <Layout>
-          <LeftSider />
-          <Content className=" overflow-auto p-5" />
+          <Content className="overflow-auto" />
         </Layout>
       </Layout>
     </ConfigProvider>

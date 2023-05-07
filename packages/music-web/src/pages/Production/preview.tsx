@@ -9,7 +9,7 @@ const Production: React.FC = () => {
   return (
     <div className=" w-full h-full rounded p-5 ">
       <Title level={3}>音乐生产</Title>
-      <div className="flex justify-center items-center">
+      <div className="flex justify-center items-center overflow-auto">
         <LyricEditor
           initialContent={content
             .split('\n')

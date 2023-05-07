@@ -1,4 +1,4 @@
-import { MUSIC_TOKEN } from '@/constants';
+import { MUSIC_API_URL, MUSIC_TOKEN, SCRIPT_API_URL } from '@/constants';
 import { message } from 'antd';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { showMessage } from './status';
@@ -9,14 +9,28 @@ export interface IResponse<T> {
   msg: string;
 }
 
-const axiosInstance: AxiosInstance = axios.create({
-  baseURL: 'http://localhost:3000/api/',
+export interface CustomAxiosRequestConfig extends AxiosRequestConfig {
+  directScript?: boolean;
+}
+
+interface Instance extends AxiosInstance {
+  (config: CustomAxiosRequestConfig): Promise<any>;
+}
+
+const axiosInstance = axios.create({
+  baseURL: MUSIC_API_URL,
   timeout: 5000,
   headers: {}
-});
+}) as Instance;
 
 axiosInstance.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
+  (config: CustomAxiosRequestConfig) => {
+    if (config?.directScript) {
+      // 需要直接请求script api
+      config.baseURL = SCRIPT_API_URL;
+      delete config.directScript;
+      return config;
+    }
     const token = localStorage.getItem(MUSIC_TOKEN);
     if (token && config?.headers) {
       config.headers['Authorization'] = `Bearer ${token}`;

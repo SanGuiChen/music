@@ -7,6 +7,7 @@ import { ManageModule } from 'modules/manage/manage.module';
 import { TaskModule } from 'modules/task/task.module';
 import { ReviewModule } from 'modules/review/review.module';
 import { UserModule } from 'modules/user/user.module';
+import { MusicModule } from 'modules/music/music.modules';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { UserModule } from 'modules/user/user.module';
     ManageModule,
     TaskModule,
     ReviewModule,
+    MusicModule,
   ],
   controllers: [],
   providers: [],

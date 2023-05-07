@@ -14,7 +14,18 @@
     "dev:service": "pnpm --filter @music/api start:dev",
     "dev:script": "cd ./packages/music-script && pnpm start"
   },
-  "keywords": [],
+  "keywords": [
+    "react",
+    "react hook",
+    "music",
+    "player",
+    "lyric",
+    "banner",
+    "typescript",
+    "音乐",
+    "nest",
+    "nestJs"
+  ],
   "author": "",
   "license": "ISC",
   "workspaces": [

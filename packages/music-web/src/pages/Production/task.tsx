@@ -87,7 +87,7 @@ const Production: React.FC = () => {
   return (
     <div className=" w-full h-full rounded p-5 ">
       <Title level={3}>音乐制作</Title>
-      <div className="w-full h-auto bg-white mb-2">
+      <div className="w-full h-auto bg-white mb-2 overflow-auto">
         {loading ? (
           <CentralLoading />
         ) : (

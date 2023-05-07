@@ -20,6 +20,7 @@
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-h5-audio-player": "^3.8.6",
     "react-i18next": "^12.1.1",
     "react-lazily-component": "^0.3.0",
     "react-router-dom": "^6.4.3",

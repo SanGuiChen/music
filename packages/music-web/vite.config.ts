@@ -27,7 +27,8 @@ export default defineConfig({
       'clamped-promise-all',
       'zustand',
       'slate',
-      'slate-react'
+      'slate-react',
+      'react-h5-audio-player'
     ]
   }
 });
