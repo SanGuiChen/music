@@ -1,8 +1,11 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { SearchFavoriteDto } from './dtos/search.dto';
+import { SearchFavoriteDto } from './dtos/searchFavorite.dto';
 import { MusicService } from './music.service';
-import { CreateFavoriteDto } from './dtos/create.dto';
-import { DeleteFavoriteDto } from './dtos/delete.dto';
+import { CreateFavoriteDto } from './dtos/createFavorite.dto';
+import { DeleteFavoriteDto } from './dtos/deleteFavorite.dto';
+import { DeleteThumbUpDto } from './dtos/deleteThumbUp';
+import { CreateThumbUpDto } from './dtos/createThumbUp';
+import { SearchThumbUpDto } from './dtos/searchThumbUp';
 
 @Controller('music')
 export class MusicController {
@@ -10,16 +13,31 @@ export class MusicController {
 
   @Post('search/favorite')
   async searchFavorite(@Body() searchDto: SearchFavoriteDto) {
-    return this.musicService.search(searchDto);
+    return this.musicService.searchFavorite(searchDto);
   }
 
   @Post('create/favorite')
   async createFavorite(@Body() createDto: CreateFavoriteDto) {
-    return this.musicService.create(createDto);
+    return this.musicService.createFavorite(createDto);
   }
 
   @Post('delete/favorite')
   async deleteFavorite(@Body() deleteDto: DeleteFavoriteDto) {
-    return this.musicService.delete(deleteDto);
+    return this.musicService.deleteFavorite(deleteDto);
+  }
+
+  @Post('search/thumbUp')
+  async searchThumbUp(@Body() searchDto: SearchThumbUpDto) {
+    return this.musicService.searchThumbUp(searchDto);
+  }
+
+  @Post('create/thumbUp')
+  async createThumbUp(@Body() createDto: CreateThumbUpDto) {
+    return this.musicService.createThumbUp(createDto);
+  }
+
+  @Post('delete/thumbUp')
+  async deleteThumbUp(@Body() deleteDto: DeleteThumbUpDto) {
+    return this.musicService.deleteThumbUp(deleteDto);
   }
 }

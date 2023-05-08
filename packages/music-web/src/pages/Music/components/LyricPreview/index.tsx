@@ -5,9 +5,10 @@ import Lyric from '../Lyric';
 import Artists from '@/components/Aritist';
 import { useRequest } from 'ahooks';
 import { getSongLyric } from '@/apis/music';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { DownOutlined } from '@ant-design/icons';
-import { Tooltip } from 'antd';
+import { FloatButton, Tooltip } from 'antd';
+import Comment from '../Comment';
 
 interface IProps {
   picUrl: string;
@@ -25,6 +26,7 @@ const LyricPreview: React.FC<IProps> = ({
   handleClose
 }) => {
   const { state: audioState } = useAudioStore();
+  const targetRef = useRef<HTMLDivElement>(null);
 
   const { data: lyric, runAsync } = useRequest(
     async () => {
@@ -39,7 +41,10 @@ const LyricPreview: React.FC<IProps> = ({
   }, [id]);
 
   return (
-    <div className="w-full h-full flex justify-center bg-white overflow-auto relative">
+    <div
+      className="w-full h-full flex justify-center bg-white overflow-auto relative"
+      ref={targetRef}
+    >
       <Tooltip title="关闭歌词">
         <DownOutlined
           className=" absolute cursor-pointer left-4 top-4"
@@ -121,8 +126,16 @@ const LyricPreview: React.FC<IProps> = ({
           </div>
         </div>
         {/* 评论部分 */}
-        <div className="flex w-full h-1/5">comment</div>
+        <div className="w-full">
+          <Comment id={id} />
+        </div>
       </div>
+      <FloatButton.BackTop
+        target={() => targetRef.current as HTMLDivElement}
+        type="primary"
+        tooltip="回到顶部"
+        style={{ bottom: 95 }}
+      />
     </div>
   );
 };

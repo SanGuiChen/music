@@ -1,10 +1,15 @@
 import { message } from 'antd';
 import axiosInstance, { CustomAxiosRequestConfig, IResponse } from '..';
 import {
+  IComment,
   ICreateFavoriteParams,
+  ICreateThumbUpParams,
   IDeleteFavoriteParams,
+  IDeleteThumbUpParams,
   IFavorite,
-  ISearchFavoriteResp
+  ISearchFavoriteResp,
+  ISearchThumbUpResp,
+  IThumbUp
 } from './index.interface';
 
 export const searchFavoriteApi = async (
@@ -32,6 +37,35 @@ export const deleteFavoriteApi = async (
   }
   return axiosInstance
     .post('music/delete/favorite', params)
+    .then((res) => res.data);
+};
+
+export const searchThumbUpApi = async (
+  userId: string,
+  songId: string
+): Promise<IResponse<ISearchThumbUpResp>> => {
+  return axiosInstance
+    .post('music/search/thumbUp', { userId, songId })
+    .then((res) => res.data);
+};
+
+export const createThumbUpApi = async (
+  params: ICreateThumbUpParams
+): Promise<IResponse<IThumbUp>> => {
+  return axiosInstance
+    .post('music/create/thumbUp', params)
+    .then((res) => res.data);
+};
+
+export const deleteThumbUpApi = async (
+  params: IDeleteThumbUpParams
+): Promise<IResponse<IThumbUp>> => {
+  if (!params?.id && (!params?.commentId || !params?.userId)) {
+    message.error('参数中必须有id 或 commentId、userId两者');
+    throw Error('参数中必须有id 或 commentId、userId两者');
+  }
+  return axiosInstance
+    .post('music/delete/thumbUp', params)
     .then((res) => res.data);
 };
 
@@ -176,6 +210,25 @@ export const searchByKeyWords = async (
     .get('/cloudsearch', {
       directScript: true,
       params: { keywords }
+    } as CustomAxiosRequestConfig)
+    .then((res) => res.data);
+};
+
+export const getSongComment = async (
+  id: number,
+  offset?: number,
+  limit?: number
+): Promise<{
+  topComments: IComment[];
+  hotComments: IComment[];
+  comments: IComment[];
+  total: number;
+  code: number;
+}> => {
+  return axiosInstance
+    .get('/comment/music', {
+      directScript: true,
+      params: { id, offset, limit }
     } as CustomAxiosRequestConfig)
     .then((res) => res.data);
 };

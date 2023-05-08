@@ -182,9 +182,11 @@ const Header = () => {
           overlayClassName="w-2/5"
           menu={{ items: dropDownItems }}
           trigger={['click']}
-          onOpenChange={(open) => {
+          onOpenChange={async (open) => {
             if (!open) {
               setIsFocus(false);
+            } else {
+              await searchHot();
             }
           }}
         >
@@ -192,7 +194,6 @@ const Header = () => {
             placeholder="搜索"
             prefix={<SearchOutlined />}
             className="w-1/5 h-full mr-12"
-            onFocus={searchHot}
             onPressEnter={(e: any) => {
               if (e.target.value) {
                 navigate(`/music/search?keyWords=${e.target.value}`);

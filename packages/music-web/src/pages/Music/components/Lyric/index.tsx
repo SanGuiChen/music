@@ -48,7 +48,7 @@ const Lyric: React.FC<IProps> = ({ lyric, audio }) => {
     <div
       className="w-full h-full overflow-auto whitespace-nowrap text-tipsHoverColor text-base "
       ref={(ref) => (lyricRef.current = ref)}
-      style={{ minWidth: 300, minHeight: 400 }}
+      style={{ minWidth: 300, minHeight: 200 }}
     >
       {lines.length === 0 ? (
         '暂无歌词'
