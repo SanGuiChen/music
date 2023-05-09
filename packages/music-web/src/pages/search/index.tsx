@@ -9,6 +9,7 @@ import {
   MusicObjectStatusEnum
 } from '@/apis/meta/index.interface';
 import { getPlayUrlApi } from '@/apis/script';
+import { formatDate } from '@/utils';
 import { useAntdTable, useRequest } from 'ahooks';
 import {
   Button,
@@ -163,6 +164,11 @@ const MusicSearch: React.FC = () => {
         ) : (
           '-'
         )
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createTime',
+      render: (text) => (text ? formatDate(text, 'yyyy-MM-dd HH:mm:ss') : '-')
     },
     {
       title: t('OPERATION'),

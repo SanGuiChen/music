@@ -1,7 +1,6 @@
 import playBar from '@/assets/play-bar.png';
 import playCd from '@/assets/play-cd.png';
-import { useAudioStore } from '@/store';
-import Lyric from '../Lyric';
+import { SearhcSouceEnum, useAudioStore } from '@/store';
 import Artists from '@/components/Aritist';
 import { useRequest } from 'ahooks';
 import { getSongLyric } from '@/apis/music';
@@ -9,6 +8,9 @@ import { useEffect, useRef } from 'react';
 import { DownOutlined } from '@ant-design/icons';
 import { FloatButton, Tooltip } from 'antd';
 import Comment from '../Comment';
+import { searchMusicObjectApi } from '@/apis/meta';
+import errorIcon from '@/assets/music.svg';
+import Lyric from '@/components/Lyric';
 
 interface IProps {
   picUrl: string;
@@ -26,12 +28,22 @@ const LyricPreview: React.FC<IProps> = ({
   handleClose
 }) => {
   const { state: audioState } = useAudioStore();
+  const searchSource = useAudioStore((state) => state.searchSource);
   const targetRef = useRef<HTMLDivElement>(null);
 
   const { data: lyric, runAsync } = useRequest(
     async () => {
-      const { lrc } = await getSongLyric(id);
-      return lrc?.lyric;
+      if (searchSource === SearhcSouceEnum.NET_EASE) {
+        const { lrc } = await getSongLyric(id);
+        return lrc?.lyric;
+      } else {
+        const { data } = await searchMusicObjectApi({
+          offset: 0,
+          limit: 1,
+          objects: [{ songId: `${id}` }]
+        });
+        return data.list?.[0]?.lyric ?? '';
+      }
     },
     { manual: true }
   );
@@ -107,7 +119,11 @@ const LyricPreview: React.FC<IProps> = ({
                 className={!audioState.paused ? 'animate-spin-slow' : ''}
               >
                 <img
-                  src={`${picUrl}?param=190y190`}
+                  src={
+                    searchSource === SearhcSouceEnum.NET_EASE
+                      ? `${picUrl}?param=190y190`
+                      : errorIcon
+                  }
                   style={{ borderRadius: '50%' }}
                 />
               </div>

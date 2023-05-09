@@ -18,6 +18,7 @@ interface IProps {
 interface createFormVal extends ICreateTaskParams {
   songName?: string;
   artistName?: string;
+  albumName?: string;
   playUrl?: string;
   lyric?: string;
 }
@@ -49,7 +50,8 @@ const CreateModal: React.FC<IProps> = ({
 
   const handleSubmit = async () => {
     const formVal = form.getFieldsValue();
-    const { songName, artistName, playUrl, lyric, ...basicInfo } = formVal;
+    const { songName, artistName, albumName, playUrl, lyric, ...basicInfo } =
+      formVal;
 
     try {
       const task = await createTaskApi({
@@ -57,7 +59,13 @@ const CreateModal: React.FC<IProps> = ({
         creatorId: user.id,
         extra:
           basicInfo.type === TaskTypeEnum.LRC
-            ? JSON.stringify({ songName, artistName, playUrl, lyric })
+            ? JSON.stringify({
+                songName,
+                artistName,
+                albumName,
+                playUrl,
+                lyric
+              })
             : undefined
       });
       if (!isEmpty(task)) {
@@ -129,6 +137,18 @@ const CreateModal: React.FC<IProps> = ({
               ]}
             >
               <Input placeholder="请输入歌曲名" />
+            </Form.Item>
+            <Form.Item
+              label="专辑名"
+              name="albumName"
+              rules={[
+                {
+                  required: true,
+                  message: `请输入专辑名`
+                }
+              ]}
+            >
+              <Input placeholder="请输入专辑名" />
             </Form.Item>
             <Form.Item label="歌曲内容" name="lyric">
               <TextArea rows={4} placeholder="请输入歌词内容" />

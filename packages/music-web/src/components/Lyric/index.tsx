@@ -10,13 +10,13 @@ const LYRIC_LINE_HEIGHT = 30;
 interface IProps {
   lyric: string;
   audio: IAudioState;
+  center?: boolean;
 }
 
-const Lyric: React.FC<IProps> = ({ lyric, audio }) => {
+const Lyric: React.FC<IProps> = ({ lyric, audio, center }) => {
   const lyricRef = useRef<HTMLDivElement | null>();
   const [line, setLine] = useState(0);
   const lines = useMemo(() => formatLyric(lyric), [lyric]);
-
   useEffect(() => {
     if (!audio?.paused) {
       window.requestAnimationFrame(() => {
@@ -46,7 +46,9 @@ const Lyric: React.FC<IProps> = ({ lyric, audio }) => {
 
   return (
     <div
-      className="w-full h-full overflow-auto whitespace-nowrap text-tipsHoverColor text-base "
+      className={`"w-full h-full overflow-auto whitespace-nowrap text-tipsHoverColor text-base" ${
+        center ? 'text-center' : ''
+      }`}
       ref={(ref) => (lyricRef.current = ref)}
       style={{ minWidth: 300, minHeight: 200 }}
     >
@@ -61,7 +63,7 @@ const Lyric: React.FC<IProps> = ({ lyric, audio }) => {
             }`;
             return (
               <div
-                key={time}
+                key={`${time}-${index}`}
                 className={className}
                 style={{ height: LYRIC_LINE_HEIGHT }}
               >

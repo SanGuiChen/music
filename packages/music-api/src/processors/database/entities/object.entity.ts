@@ -37,6 +37,9 @@ export class MusicObject {
   @Column({ comment: '封面', nullable: true })
   imgUrl: string;
 
+  @Column({ type: 'text', comment: '歌词', nullable: true })
+  lyric?: string;
+
   @Column({ comment: '音乐播放url', nullable: true })
   playUrl: string;
 

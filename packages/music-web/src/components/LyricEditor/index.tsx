@@ -1,17 +1,27 @@
 import {
   DownloadOutlined,
+  EyeOutlined,
   PlayCircleOutlined,
   UploadOutlined,
   UpSquareOutlined
 } from '@ant-design/icons';
 import { Button, message, Space, Upload } from 'antd';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import { createEditor, Editor, Node, Transforms } from 'slate';
 import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
+import Lyric from '../Lyric';
+import { IAudioState } from '@/store';
 
 interface IProps {
   initialContent?: Node[];
   initialPlayUrl?: string;
+  onChange?: (data: string) => void;
 }
 
 enum KeyBoardCode {
@@ -19,7 +29,11 @@ enum KeyBoardCode {
   ENTER = 13
 }
 
-const LyricEditor: React.FC<IProps> = ({ initialContent, initialPlayUrl }) => {
+const LyricEditor: React.FC<IProps> = ({
+  initialContent,
+  initialPlayUrl,
+  onChange
+}) => {
   const lyricPlayerRef = useRef<HTMLAudioElement>(null);
   const editor = useMemo(() => withReact(createEditor()), []);
 
@@ -29,6 +43,37 @@ const LyricEditor: React.FC<IProps> = ({ initialContent, initialPlayUrl }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isPlay, setIsPlay] = useState<boolean>(false);
   const [fileName, setFileName] = useState<string>('');
+  const [previewVisible, setPreviewVisible] = useState<boolean>(false);
+  const [audioState, setAudioState] = useState<IAudioState>({
+    audioRef: lyricPlayerRef.current,
+    paused: lyricPlayerRef.current?.paused ?? false,
+    time: lyricPlayerRef.current?.currentTime ?? 0
+  });
+
+  const handleUpdateState = () => {
+    setAudioState({
+      audioRef: lyricPlayerRef.current,
+      paused: lyricPlayerRef.current?.paused ?? false,
+      time: lyricPlayerRef.current?.currentTime ?? 0
+    });
+  };
+
+  useEffect(() => {
+    lyricPlayerRef.current?.addEventListener('play', handleUpdateState);
+    lyricPlayerRef.current?.addEventListener('pause', handleUpdateState);
+    lyricPlayerRef.current?.addEventListener('ended', handleUpdateState);
+    lyricPlayerRef.current?.addEventListener('timeupdate', handleUpdateState);
+
+    return () => {
+      lyricPlayerRef.current?.removeEventListener('play', handleUpdateState);
+      lyricPlayerRef.current?.removeEventListener('pause', handleUpdateState);
+      lyricPlayerRef.current?.removeEventListener('ended', handleUpdateState);
+      lyricPlayerRef.current?.removeEventListener(
+        'timeupdate',
+        handleUpdateState
+      );
+    };
+  }, [lyricPlayerRef]);
 
   const renderElement = useCallback(
     ({ attributes, children, element }: any) => {
@@ -105,13 +150,13 @@ const LyricEditor: React.FC<IProps> = ({ initialContent, initialPlayUrl }) => {
   const getCurrentTime = () => {
     const player = lyricPlayerRef.current;
     if (player) {
-      const totalSeconds = Math.floor(player.currentTime);
-      const hour = Math.floor(totalSeconds / 3600);
-      const minute = Math.floor((totalSeconds % 3600) / 60);
-      const seconds = totalSeconds % 60;
-      return `[${hour.toString().padStart(2, '0')}:${minute
+      const currentTime = player.currentTime;
+      const minutes = Math.floor(currentTime / 60);
+      const seconds = Math.floor(currentTime % 60);
+      const milliseconds = Math.floor(currentTime * 1000) % 1000;
+      return `[${minutes.toString().padStart(2, '0')}:${seconds
         .toString()
-        .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}] `;
+        .padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}] `;
     } else {
       message.error('发生了未知错误');
       return '';
@@ -138,6 +183,15 @@ const LyricEditor: React.FC<IProps> = ({ initialContent, initialPlayUrl }) => {
     lyricPlayerRef.current?.pause();
   };
 
+  const handlePreview = async () => {
+    if (!previewVisible) {
+      await handlePlay();
+    } else {
+      handlePause();
+    }
+    setPreviewVisible(!previewVisible);
+  };
+
   const reMakeLyric = async () => {
     for (let i = 0; i < currentIndex; i++) {
       Transforms.removeNodes(editor, { at: [i, 0] });
@@ -162,22 +216,36 @@ const LyricEditor: React.FC<IProps> = ({ initialContent, initialPlayUrl }) => {
       className="border-gray-300 border border-solid rounded bg-white"
       style={{ width: 800, height: 600 }}
     >
-      <div className=" overflow-auto">
-        <Slate
-          editor={editor}
-          value={content}
-          onChange={(value) => {
-            setContent(value);
-          }}
-        >
-          <Editable
-            onKeyDown={(e) => handleKeyDown(e)}
-            renderElement={renderElement}
-            renderLeaf={renderLeaf}
-            className="p-2"
-            style={{ width: '100%', height: 500 }}
-          />
-        </Slate>
+      <div className="w-full flex" style={{ height: 500 }}>
+        <div className="overflow-auto w-full" style={{ minWidth: 400 }}>
+          <Slate
+            editor={editor}
+            value={content}
+            onChange={(value) => {
+              setContent(value);
+              onChange?.(value.map((n) => Node.string(n)).join('\n'));
+            }}
+          >
+            <Editable
+              onKeyDown={(e) => handleKeyDown(e)}
+              renderElement={renderElement}
+              renderLeaf={renderLeaf}
+              className="p-2"
+              style={{ width: '100%', height: 500 }}
+            />
+          </Slate>
+        </div>
+        {previewVisible && (
+          <div className="w-full h-full bg-green-100 flex justify-center items-center">
+            <div className="w-3/4">
+              <Lyric
+                lyric={content.map((n) => Node.string(n)).join('\n')}
+                audio={audioState}
+                center={true}
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       <div>
@@ -269,6 +337,10 @@ const LyricEditor: React.FC<IProps> = ({ initialContent, initialPlayUrl }) => {
 
           <Button icon={<DownloadOutlined />} onClick={handleDownload}>
             导出歌词
+          </Button>
+
+          <Button icon={<EyeOutlined />} onClick={handlePreview}>
+            预览
           </Button>
         </Space>
         <audio

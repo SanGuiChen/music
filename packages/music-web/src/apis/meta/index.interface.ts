@@ -28,6 +28,7 @@ export interface IMusicObject {
   albumName: string;
   imgUrl: string;
   playUrl: string;
+  lyric?: string;
   status: MusicObjectStatusEnum;
 }
 
@@ -41,12 +42,13 @@ export interface IMusicOfflineParams {
 }
 
 export interface IStorageParams {
-  songId: number;
+  songId: string;
   songName: string;
   artistId: string;
   artistName: string;
-  albumId: number;
+  albumId: string;
   albumName: string;
   imgUrl: string;
   playUrl: string;
+  lyric?: string;
 }

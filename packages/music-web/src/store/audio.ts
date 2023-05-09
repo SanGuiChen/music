@@ -14,6 +14,11 @@ export enum MusicPageStatusEnum {
   DISCOVERY_LATEST_MUSIC = 'DISCOVERY_LATEST_MUSIC'
 }
 
+export enum SearhcSouceEnum {
+  NET_EASE = 'NET_EASE',
+  META = 'META'
+}
+
 export interface IAudioState {
   audioRef: HTMLAudioElement | null | undefined;
   paused: boolean;
@@ -25,6 +30,7 @@ interface IAudioStore {
   playList: IMusic[]; // 播放列表
   currentIndex: number; // 当前在播放列表第几首
   pageStatus: MusicPageStatusEnum;
+  searchSource: SearhcSouceEnum;
 
   play: () => void;
   pause: () => void;
@@ -33,6 +39,7 @@ interface IAudioStore {
   setPlayList: (list: IMusic[]) => void;
   setCurrentIndex: (currentIndex: number) => void;
   setPageStatus: (pageStatus: MusicPageStatusEnum) => void;
+  setSearchSource: (searchSource: SearhcSouceEnum) => void;
 }
 
 export const useAudioStore = create<IAudioStore>((set) => ({
@@ -44,6 +51,8 @@ export const useAudioStore = create<IAudioStore>((set) => ({
   playList: [],
   currentIndex: -1,
   pageStatus: MusicPageStatusEnum.DISCOVERY_RECOMENDATION,
+  searchSource: SearhcSouceEnum.NET_EASE,
+
   play: () => {
     set((state) => {
       state.state.audioRef?.play();
@@ -90,5 +99,7 @@ export const useAudioStore = create<IAudioStore>((set) => ({
       return state;
     }),
   setPageStatus: (pageStatus: MusicPageStatusEnum) =>
-    set(() => ({ pageStatus }))
+    set(() => ({ pageStatus })),
+  setSearchSource: (searchSource: SearhcSouceEnum) =>
+    set(() => ({ searchSource }))
 }));

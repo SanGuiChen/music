@@ -7,7 +7,7 @@ import previousIcon from '@/assets/previous.svg';
 import nextIcon from '@/assets/next.svg';
 import playIcon from '@/assets/play-player.svg';
 import pauseIcon from '@/assets/pause-player.svg';
-import errorIcon from '@/assets/error.svg';
+import errorIcon from '@/assets/music.svg';
 import { Drawer, Tooltip, message } from 'antd';
 import Artists from '@/components/Aritist';
 import { DoubleRightOutlined } from '@ant-design/icons';
@@ -140,32 +140,29 @@ const Footer: React.FC<IProps> = () => {
                   preview={false}
                   fallback={errorIcon}
                 />
-                {playList?.[currentIndex]?.picUrl && (
-                  <Tooltip title={lyricVisible ? '关闭歌词' : '展开歌词'}>
-                    <div
-                      style={{
-                        width: 40,
-                        height: 40,
-                        position: 'absolute',
-                        left: '50%',
-                        top: '50%',
-                        transform: `translate(-50%,-50%) ${
-                          lyricVisible ? 'rotate(90deg)' : 'rotate(-90deg)'
-                        }`,
-                        cursor: 'pointer',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                      }}
-                      className=" bg-gray-600 rounded opacity-0 hover:opacity-100"
-                      onClick={
-                        lyricVisible ? handleLyricHidden : handleShowLyric
-                      }
-                    >
-                      <DoubleRightOutlined />
-                    </div>
-                  </Tooltip>
-                )}
+
+                <Tooltip title={lyricVisible ? '关闭歌词' : '展开歌词'}>
+                  <div
+                    style={{
+                      width: 40,
+                      height: 40,
+                      position: 'absolute',
+                      left: '50%',
+                      top: '50%',
+                      transform: `translate(-50%,-50%) ${
+                        lyricVisible ? 'rotate(90deg)' : 'rotate(-90deg)'
+                      }`,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}
+                    className=" bg-gray-600 rounded opacity-0 hover:opacity-100"
+                    onClick={lyricVisible ? handleLyricHidden : handleShowLyric}
+                  >
+                    <DoubleRightOutlined />
+                  </div>
+                </Tooltip>
               </div>
 
               <div className="ml-2 flex justify-center flex-col">

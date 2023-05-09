@@ -1,29 +1,33 @@
-import { IsNumberString, IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class StorageDto {
-  @IsNumberString()
+  @IsString()
   songId: number | string;
 
-  @IsString()
+  @IsString({ message: 'songName must be string' })
   songName: string;
 
-  @IsNumberString()
+  @IsString()
   artistId: number | string;
 
-  @IsString()
+  @IsString({ message: 'artistName must be string' })
   artistName: string;
 
-  @IsNumberString()
+  @IsString()
   albumId: number | string;
 
-  @IsString()
+  @IsString({ message: 'albumName must be string' })
   albumName: string;
 
-  @IsString()
+  @IsString({ message: 'imgUrl must be string' })
   @IsOptional()
   imgUrl?: string;
 
-  @IsString()
+  @IsString({ message: 'playUrl must be string' })
   @IsOptional()
   playUrl?: string;
+
+  @IsString({ message: 'lyric must be string' })
+  @IsOptional()
+  lyric?: string;
 }

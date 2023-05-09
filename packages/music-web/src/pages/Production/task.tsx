@@ -72,7 +72,8 @@ const Production: React.FC = () => {
       const { data: createData } = await createReviewApi({
         reviewerId: user.id,
         employeeId: personalTask[0].userId,
-        taskId
+        taskId,
+        lyric: content
       });
       if (!isEmpty(createData)) {
         message.success('任务提交成功, 等待审核');
@@ -83,6 +84,10 @@ const Production: React.FC = () => {
     },
     { manual: true }
   );
+
+  const handleContentChange = (data: string) => {
+    setContent(data);
+  };
 
   return (
     <div className=" w-full h-full rounded p-5 ">
@@ -119,6 +124,7 @@ const Production: React.FC = () => {
                   .split('\n')
                   .map((text) => ({ type: 'text', children: [{ text }] }))}
                 initialPlayUrl={playUrl}
+                onChange={handleContentChange}
               />
             </div>
           </>

@@ -15,5 +15,13 @@ export class CreateReviewDto {
 
   @IsString()
   @IsOptional()
+  lyric?: string;
+
+  @IsString()
+  @IsOptional()
+  playUrl?: string;
+
+  @IsString()
+  @IsOptional()
   extra?: string;
 }

@@ -4,7 +4,7 @@ import { useAntdTable, useRequest } from 'ahooks';
 import { Input, Image, Typography, Button, message, Form } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import Title from 'antd/es/typography/Title';
-import { omit } from 'lodash';
+import { compact, omit } from 'lodash';
 import { useState } from 'react';
 import { clampedAll } from 'clamped-promise-all';
 import { CONCURRENT_LIMIT } from '@/constants';
@@ -12,17 +12,18 @@ import { useTranslation } from 'react-i18next';
 import { useForm } from 'antd/es/form/Form';
 import { IStorageParams } from '@/apis/meta/index.interface';
 import { storageApi } from '@/apis/meta';
+import { getSongLyric } from '@/apis/music';
 
 const { Text } = Typography;
 const { Search } = Input;
 
 interface ISearchTable {
   key: React.Key;
-  songId: number;
+  songId: number | string;
   songName: string;
   artistId: string;
   artistName: string;
-  albumId: number;
+  albumId: number | string;
   albumName: string;
   imgUrl: string;
   playUrl: string;
@@ -107,8 +108,18 @@ const Script: React.FC = () => {
     async (params: IStorageParams[]) => {
       const res = [];
       await clampedAll(
-        params.map((param) => async () => {
-          res.push(await storageApi(param));
+        compact(params).map((param) => async () => {
+          const { songId, albumId, artistId } = param;
+          const { lrc } = await getSongLyric(parseInt(songId));
+          res.push(
+            await storageApi({
+              ...param,
+              albumId: `${albumId}`,
+              artistId: `${artistId}`,
+              songId: `${songId}`,
+              lyric: lrc.lyric
+            })
+          );
         }),
         CONCURRENT_LIMIT
       );
@@ -157,7 +168,9 @@ const Script: React.FC = () => {
         ...omit(item, ['artists', 'playUrl']),
         artistName: item.artists.map(({ artistName }) => artistName).join(';'),
         artistId: item.artists.map(({ artistId }) => artistId).join(';'),
-        playUrl: playUrlMap[item.songId] ? playUrlMap[item.songId] : '-'
+        playUrl: playUrlMap[item.songId] ? playUrlMap[item.songId] : '-',
+        songId: `${item.songId}`,
+        albumId: `${item.albumId}`
       };
       map[key] = tableItem;
 

@@ -45,12 +45,12 @@ const Production: React.FC = () => {
     const { extra } = data[0];
     if (extra) {
       const { songName, artistName, lyric, playUrl } = JSON.parse(extra);
-      if (playUrl) {
-        setPlayUrl(playUrl);
+      if (playUrl || reviews[0]?.playUrl) {
+        setPlayUrl(reviews[0]?.playUrl ? reviews[0]?.playUrl : playUrl);
       }
 
-      if (lyric) {
-        setContent(lyric);
+      if (lyric || reviews[0]?.lyric) {
+        setContent(reviews[0]?.lyric ? reviews[0]?.lyric : lyric);
       }
 
       const info: IBasicInfo = {};

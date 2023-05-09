@@ -26,6 +26,12 @@ export class Review {
   @Column({ comment: '任务Id' })
   taskId: string;
 
+  @Column({ type: 'text', nullable: true, comment: '歌词' })
+  lyric?: string;
+
+  @Column({ comment: '播放Url', nullable: true })
+  playUrl?: string;
+
   @Column({
     type: 'enum',
     enum: ReviewStatusEnum,

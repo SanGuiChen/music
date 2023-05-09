@@ -10,6 +10,8 @@ export interface IReview {
   employeeId: string;
   taskId: string;
   status: ReviewStatusEnum;
+  lyric?: string;
+  playUrl?: string;
   createTime: string;
   updateTime: string;
   extra?: string;
@@ -36,6 +38,8 @@ export interface ICreateReviewParams {
   employeeId: string;
   taskId: string;
   extra?: string;
+  lyric: string;
+  playUrl?: string;
 }
 
 export interface ISubmitReviewParams {

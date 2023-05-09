@@ -1,11 +1,12 @@
 import { getSongUrlById } from '@/apis/music';
 import playIcon from '@/assets/play.svg';
 import pauseIcon from '@/assets/pause.svg';
-import errorIcon from '@/assets/error.svg';
-import { IMusic, useAudioStore } from '@/store';
+import errorIcon from '@/assets/music.svg';
+import { IMusic, SearhcSouceEnum, useAudioStore } from '@/store';
 import { isNumber } from 'lodash';
 import { Tooltip } from 'antd';
 import { Image } from 'antd';
+import { searchMusicObjectApi } from '@/apis/meta';
 
 interface IProps {
   picUrl: string;
@@ -15,6 +16,7 @@ interface IProps {
 const Cover: React.FC<IProps> = ({ picUrl, song }) => {
   const playList = useAudioStore((state) => state.playList);
   const currentIndex = useAudioStore((state) => state.currentIndex);
+  const searchSource = useAudioStore((state) => state.searchSource);
   const setPlayList = useAudioStore((state) => state.setPlayList);
   const setCurrentIndex = useAudioStore((state) => state.setCurrentIndex);
 
@@ -22,10 +24,35 @@ const Cover: React.FC<IProps> = ({ picUrl, song }) => {
 
   const handlePlay = async (song: any) => {
     const { id } = song;
-    if (isNumber(id)) {
-      const { data } = await getSongUrlById([id]);
-      const newItemList: IMusic[] = data.map((item) => ({
-        playUrl: item.url,
+    if (searchSource === SearhcSouceEnum.NET_EASE) {
+      if (isNumber(id)) {
+        const { data } = await getSongUrlById([id]);
+        const newItemList: IMusic[] = data.map((item) => ({
+          playUrl: item.url,
+          id,
+          picUrl,
+          artists: song?.artists ?? [],
+          name: song?.name ?? '-'
+        }));
+        if (playList.length === 0) {
+          setPlayList(newItemList);
+        } else {
+          const list = [...playList];
+          list.splice(currentIndex + 1, 0, ...newItemList);
+          setPlayList(list);
+        }
+        setCurrentIndex(currentIndex + 1);
+        play();
+      }
+    } else {
+      const { data } = await searchMusicObjectApi({
+        offset: 0,
+        limit: 1,
+        objects: [{ songId: id }]
+      });
+      const { list } = data;
+      const newItemList: IMusic[] = list.map((item) => ({
+        playUrl: item.playUrl,
         id,
         picUrl,
         artists: song?.artists ?? [],

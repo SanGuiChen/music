@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   Review,
@@ -7,7 +7,7 @@ import {
 import { In, MoreThanOrEqual, Repository } from 'typeorm';
 import { CreateReviewDto } from './dtos/create.dto';
 import { SearchReviewDto } from './dtos/search.dto';
-import { isEmpty, uniqueId } from 'lodash';
+import { isEmpty, omit, uniqueId } from 'lodash';
 import { CustomError } from 'errors/custom.error';
 import { SubmitReviewDto } from './dtos/submit.dto';
 import { TaskService } from 'modules/task/task.service';
@@ -71,7 +71,7 @@ export class ReviewService {
         order: { createTime: 'DESC' },
       });
       const review = reviews[0];
-      const { taskId } = review;
+      const { taskId, lyric: diyLyric, playUrl: diyUrl } = review;
       // task状态更新为已完成
       await this.taskService.finishTask(taskId);
       const task = (
@@ -83,9 +83,9 @@ export class ReviewService {
         if (task?.extra) {
           const { songName, artistName, albumName, lyric, playUrl } =
             JSON.parse(task.extra);
-          const songId = uniqueId();
-          const artistId = uniqueId();
-          const albumId = uniqueId();
+          const songId = uniqueId(new Date().valueOf().toString());
+          const artistId = uniqueId(new Date().valueOf().toString());
+          const albumId = uniqueId(new Date().valueOf().toString());
           await this.manageService.storage({
             songId,
             songName,
@@ -93,13 +93,15 @@ export class ReviewService {
             artistName,
             albumId,
             albumName,
-            playUrl,
+            playUrl: diyUrl ? diyUrl : playUrl,
+            lyric: diyLyric ? diyLyric : lyric,
           });
         }
       }
       return updateRes;
     } catch (e) {
-      throw new CustomError('Review Submit Failed');
+      Logger.error(e);
+      throw new CustomError(e);
     }
   }
 

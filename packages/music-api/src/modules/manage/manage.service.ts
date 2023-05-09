@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   MusicObject,
@@ -8,6 +8,7 @@ import { ILike, Repository } from 'typeorm';
 import { SearchDto } from './dtos/search.dto';
 import { CustomError } from 'errors/custom.error';
 import { StorageDto } from './dtos/storage.dto';
+import { HttpBadRequestError } from 'errors/bad-request.error';
 
 @Injectable()
 export class ManageService {
@@ -19,6 +20,7 @@ export class ManageService {
   async search(params: SearchDto) {
     const { objects, offset, limit } = params;
     const [object, count] = await this.musicObjectRepository.findAndCount({
+      order: { createTime: 'DESC' },
       where: objects?.map((item) => ({
         ...item,
         songName: item?.songName ? ILike(`%${item.songName}%`) : undefined,
@@ -82,8 +84,11 @@ export class ManageService {
       try {
         return await this.musicObjectRepository.save(musicObject);
       } catch (e) {
+        Logger.error(e);
         throw new CustomError('Song storage failed');
       }
+    } else {
+      throw new HttpBadRequestError('该歌曲已在库中');
     }
   }
 }

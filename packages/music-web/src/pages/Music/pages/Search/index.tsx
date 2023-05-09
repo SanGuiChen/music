@@ -12,15 +12,17 @@ import {
   searchByKeyWords,
   searchFavoriteApi
 } from '@/apis/music';
-import { IMusic, useAudioStore, useUserStore } from '@/store';
-import { debounce, isEmpty } from 'lodash';
+import { IMusic, SearhcSouceEnum, useAudioStore, useUserStore } from '@/store';
+import { debounce, isEmpty, uniqBy } from 'lodash';
 import { useSearchParams } from 'react-router-dom';
 import { FavoriteSourceEnum } from '@/apis/music/index.interface';
 import { useEffect } from 'react';
+import { searchMusicObjectApi } from '@/apis/meta';
+import { MusicObjectStatusEnum } from '@/apis/meta/index.interface';
 
 interface ISongItem {
   album: any;
-  id: number;
+  id: number | string;
   artists: any[];
   name: string;
   duration: number;
@@ -28,17 +30,19 @@ interface ISongItem {
 
 const Search = () => {
   const user = useUserStore((state) => state.user);
+  const searchSource = useAudioStore((state) => state.searchSource);
   const setPlayList = useAudioStore((state) => state.setPlayList);
   const setCurrentIndex = useAudioStore((state) => state.setCurrentIndex);
 
   const { play } = useAudioStore();
 
   const [searchParams, setSearchParams] = useSearchParams();
+
   const keyWords = searchParams.get('keyWords');
 
   useEffect(() => {
     search();
-  }, [keyWords]);
+  }, [keyWords, searchSource]);
 
   const { data: favoriteSongIds = [], runAsync: fetchFavorite } = useRequest(
     async () => {
@@ -57,19 +61,55 @@ const Search = () => {
       message.error('无搜索参数, 请重新搜素');
       return;
     }
-    const { result } = await searchByKeyWords(keyWords);
-    const { songs, songCount } = result;
-    const list: ISongItem[] = songs.map((item) => ({
-      name: item.name,
-      album: item.al,
-      artists: item.ar,
-      duration: item.dt,
-      id: item.id
-    }));
-    return {
-      count: songCount,
-      songs: list
-    };
+    if (searchSource === SearhcSouceEnum.NET_EASE) {
+      const { result } = await searchByKeyWords(keyWords);
+      const { songs, songCount } = result;
+      const list: ISongItem[] = songs.map((item) => ({
+        name: item.name,
+        album: item.al,
+        artists: item.ar,
+        duration: item.dt,
+        id: item.id
+      }));
+      return {
+        count: songCount,
+        songs: list
+      };
+    } else {
+      const { data: songData } = await searchMusicObjectApi({
+        offset: 0,
+        limit: 100,
+        objects: [{ songName: keyWords }]
+      });
+      const { data: albumData } = await searchMusicObjectApi({
+        offset: 0,
+        limit: 100,
+        objects: [{ albumName: keyWords }]
+      });
+      const { data: artistData } = await searchMusicObjectApi({
+        offset: 0,
+        limit: 100,
+        objects: [{ artistName: keyWords }]
+      });
+      const songList = uniqBy(
+        [...songData.list, ...albumData.list, ...artistData.list],
+        'songId'
+      );
+      // count不准确
+      const list: ISongItem[] = songList
+        .filter((item) => item.status === MusicObjectStatusEnum.IN_USE)
+        .map((item) => ({
+          name: item.songName,
+          album: { picUrl: item.imgUrl, name: item.albumName },
+          artists: item.artistName.split(';').map((name) => ({ name })),
+          duration: 0,
+          id: item.songId
+        }));
+      return {
+        count: list.length,
+        songs: list
+      };
+    }
   });
 
   const handleCreateFavorite = async (songId: string) => {
@@ -97,23 +137,44 @@ const Search = () => {
   };
 
   const handlePlayAll = async () => {
-    const songIds = songData.songs.map((item) => item.id);
-    const { data } = await getSongUrlById(songIds);
-    const songIdToPlayUrlMap: Record<string, string> = {};
-    data.forEach((item) => {
-      songIdToPlayUrlMap[item.id] = item.url;
-    });
+    if (searchSource === SearhcSouceEnum.NET_EASE) {
+      const songIds = songData.songs.map((item) => item.id);
+      const { data } = await getSongUrlById(songIds);
+      const songIdToPlayUrlMap: Record<string, string> = {};
+      data.forEach((item) => {
+        songIdToPlayUrlMap[item.id] = item.url;
+      });
 
-    const list: IMusic[] = songData.songs.map((item) => ({
-      id: item.id,
-      playUrl: songIdToPlayUrlMap[`${item.id}`] ?? '-',
-      name: item.name,
-      picUrl: item?.album?.picUrl,
-      artists: item?.artists ?? []
-    }));
-    setPlayList(list);
-    setCurrentIndex(0);
-    play();
+      const list: IMusic[] = songData.songs.map((item) => ({
+        id: item.id,
+        playUrl: songIdToPlayUrlMap[`${item.id}`] ?? '-',
+        name: item.name,
+        picUrl: item?.album?.picUrl,
+        artists: item?.artists ?? []
+      }));
+      setPlayList(list);
+      setCurrentIndex(0);
+      play();
+    } else {
+      const songs = songData.songs.map((item) => ({ songId: item.id }));
+      const { data } = await searchMusicObjectApi({
+        offset: 0,
+        limit: 100,
+        objects: songs
+      });
+
+      const list: IMusic[] = data.list.map((item) => ({
+        id: item.songId,
+        playUrl: item.playUrl ?? '-',
+        name: item.songName,
+        picUrl: item.imgUrl,
+        artists: item.artistName.split(';').map((name) => ({ name })) ?? []
+      }));
+
+      setPlayList(list);
+      setCurrentIndex(0);
+      play();
+    }
   };
 
   return (
@@ -157,7 +218,7 @@ const Search = () => {
                     <div>{album?.name ?? '-'}</div>
                   </div>
                   <div className="font-light mr-2">
-                    {formatTime(duration / 1000)}
+                    {duration ? formatTime(duration / 1000) : '-'}
                   </div>
                   <Tooltip
                     title={
