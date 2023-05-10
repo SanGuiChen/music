@@ -236,8 +236,8 @@ const LyricEditor: React.FC<IProps> = ({
           </Slate>
         </div>
         {previewVisible && (
-          <div className="w-full h-full bg-green-100 flex justify-center items-center">
-            <div className="w-3/4">
+          <div className="w-full h-full bg-green-100 flex justify-center items-center overflow-auto">
+            <div className="w-3/4 h-3/4 ">
               <Lyric
                 lyric={content.map((n) => Node.string(n)).join('\n')}
                 audio={audioState}

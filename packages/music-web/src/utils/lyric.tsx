@@ -20,7 +20,7 @@ export const formatLyric = (lyric = '') => {
   if (matchResult) {
     matchResult.forEach((str) => {
       const timeStr = str.match(/\[\d{2}:\d{2}.\d{2,3}\]/) as RegExpMatchArray;
-      const content = str.replace(timeStr[0], '');
+      const content = str.replace(timeStr[0], '').trim();
 
       result.push([formatLyricTime(timeStr[0]), content]);
     });

@@ -17,6 +17,7 @@ const Lyric: React.FC<IProps> = ({ lyric, audio, center }) => {
   const lyricRef = useRef<HTMLDivElement | null>();
   const [line, setLine] = useState(0);
   const lines = useMemo(() => formatLyric(lyric), [lyric]);
+  console.log('lines', lines);
   useEffect(() => {
     if (!audio?.paused) {
       window.requestAnimationFrame(() => {
