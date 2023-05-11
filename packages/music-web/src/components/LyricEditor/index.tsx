@@ -185,6 +185,9 @@ const LyricEditor: React.FC<IProps> = ({
 
   const handlePreview = async () => {
     if (!previewVisible) {
+      if (lyricPlayerRef.current?.currentTime) {
+        lyricPlayerRef.current.currentTime = 0;
+      }
       await handlePlay();
     } else {
       handlePause();
