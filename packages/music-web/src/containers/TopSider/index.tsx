@@ -25,7 +25,7 @@ const Index: React.FC<IProps> = ({ className, style }) => {
   const items = useMemo(
     () => [
       {
-        label: <Link to="/search">{t('MUSIC_RETRIEVAL')}</Link>,
+        label: <Link to="/search">音乐内容管理</Link>,
         key: generateMenuId.next().value,
         icon: <SearchOutlined />,
         url: '/search'
