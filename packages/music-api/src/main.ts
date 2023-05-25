@@ -5,6 +5,7 @@ import { HttpExceptionFilter } from 'filters/http-execption.filter';
 import { TransformInterceptor } from 'interceptors/transform.interceptor';
 import { AppModule } from './app.module';
 import { ValidationError } from 'errors/validation.error';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -27,8 +28,19 @@ async function bootstrap() {
   app.useGlobalInterceptors(new TransformInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter());
   app.enableCors();
+
+  const config = new DocumentBuilder()
+    .setTitle('Music Api')
+    .setDescription('The Music API description')
+    .setVersion('1.0')
+    .addTag('muses')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+
   const port = configService.get<number>('API_PORT') || 3000;
   await app.listen(port);
   Logger.log(`Appplication started on port: ${port}`);
+  Logger.log(`Music Api Docs on http://localhost:3000/api`);
 }
 bootstrap();
